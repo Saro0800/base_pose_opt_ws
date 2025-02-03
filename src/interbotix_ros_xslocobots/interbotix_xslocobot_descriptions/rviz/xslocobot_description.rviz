@@ -720,7 +720,7 @@ Visualization Manager:
           Marker Topic: /viz_pointcloud
           Name: Point cloud
           Namespaces:
-            {}
+            "": true
           Queue Size: 100
           Value: true
         - Class: rviz/Marker
@@ -728,7 +728,7 @@ Visualization Manager:
           Marker Topic: /viz_reachability_ellipsoid
           Name: Ellipsoid
           Namespaces:
-            {}
+            "": true
           Queue Size: 100
           Value: true
         - Class: rviz/Marker
@@ -736,7 +736,7 @@ Visualization Manager:
           Marker Topic: /viz_ellipsoid_center
           Name: Ellipsoid center
           Namespaces:
-            {}
+            "": true
           Queue Size: 100
           Value: true
       Enabled: true
@@ -785,7 +785,7 @@ Visualization Manager:
   Views:
     Current:
       Class: rviz/Orbit
-      Distance: 2.9526047706604004
+      Distance: 5.857968330383301
       Enable Stereo Rendering:
         Stereo Eye Separation: 0.05999999865889549
         Stereo Focal Distance: 1
