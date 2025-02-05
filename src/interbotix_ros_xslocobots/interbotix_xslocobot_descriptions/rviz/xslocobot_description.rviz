@@ -713,6 +713,14 @@ Visualization Manager:
           Value: true
       Enabled: false
       Name: Perception
+    - Class: rviz/MarkerArray
+      Enabled: true
+      Marker Topic: /locobot/octomap_server/occupied_cells_vis_array
+      Name: OctoMap server
+      Namespaces:
+        map: true
+      Queue Size: 100
+      Value: true
     - Class: rviz/Group
       Displays:
         - Class: rviz/Marker
@@ -720,7 +728,7 @@ Visualization Manager:
           Marker Topic: /viz_pointcloud
           Name: Point cloud
           Namespaces:
-            "": true
+            {}
           Queue Size: 100
           Value: true
         - Class: rviz/Marker
@@ -728,7 +736,7 @@ Visualization Manager:
           Marker Topic: /viz_reachability_ellipsoid
           Name: Ellipsoid
           Namespaces:
-            "": true
+            {}
           Queue Size: 100
           Value: true
         - Class: rviz/Marker
@@ -736,7 +744,7 @@ Visualization Manager:
           Marker Topic: /viz_ellipsoid_center
           Name: Ellipsoid center
           Namespaces:
-            "": true
+            {}
           Queue Size: 100
           Value: true
       Enabled: true
@@ -785,7 +793,7 @@ Visualization Manager:
   Views:
     Current:
       Class: rviz/Orbit
-      Distance: 5.857968330383301
+      Distance: 10.028559684753418
       Enable Stereo Rendering:
         Stereo Eye Separation: 0.05999999865889549
         Stereo Focal Distance: 1
@@ -801,9 +809,9 @@ Visualization Manager:
       Invert Z Axis: false
       Name: Current View
       Near Clip Distance: 0.009999999776482582
-      Pitch: 0.5597975254058838
+      Pitch: 0.8247971534729004
       Target Frame: <Fixed Frame>
-      Yaw: 0.915004312992096
+      Yaw: 4.708194732666016
     Saved: ~
 Window Geometry:
   Displays:

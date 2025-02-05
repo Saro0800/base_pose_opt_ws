@@ -3,20 +3,20 @@
   <arg name="robot_model"                       default="locobot_wx250s"/>
   <arg name="robot_name"                        default="locobot"/>
   <arg name="arm_model"                         default="$(eval 'mobile_' + arg('robot_model').split('_')[1])"/>
-  <arg name="use_lidar"                         default="false"/>
+  <arg name="use_lidar"                         default="true"/>
   <arg name="show_gripper_bar"                  default="true"/>
   <arg name="show_gripper_fingers"              default="true"/>
   <arg name="external_urdf_loc"                 default=""/>
-  <arg name="localization"                      default="false"/>
+  <arg name="localization"                      default="true"/>
   <arg name="rtabmap_args"                      default=""/>
   <arg name="use_rtabmapviz"                    default="false"/>
   <arg name="rtabmapviz_args"                   default=""/>
-  <arg name="database_path"                     default="~/.ros/rtabmap.db"/>
+  <arg name="database_path"                     default="~/Desktop/base_pose_opt_ws/src/maps/rtabmap.db"/>
   <arg name="camera_tilt_angle"                 default="0.2618"/>
   <arg name="use_rviz"                          default="true"/>
   <arg name="base_type"                         default="kobuki"/> <!-- 'kobuki', 'create3' -->
   <arg name="rviz_frame"                        default="map"/>
-  <arg name="world_name"                        default="$(find interbotix_xslocobot_gazebo)/worlds/xslocobot_gazebo.world"/>
+  <arg name="world_name"                        default="$(find interbotix_xslocobot_gazebo)/worlds/office_small_custom.world"/>
   <arg name="gui"                               default="true"/>
   <arg name="debug"                             default="false"/>
   <arg name="paused"                            default="true"/>
@@ -201,5 +201,23 @@
     <remap from="map"                             to="rtabmap/grid_map"/>
     <remap from="odom"                            to="$(arg odom_topic)"/>
   </node>
+
+  <!-- octomap_server node -->
+  <node
+    pkg="octomap_server"
+    type="octomap_server_node"
+    respawn="false"
+    name="octomap_server"
+    output="screen"
+    ns="$(arg robot_name)/octomap_server"
+    args="/home/rosario/Desktop/base_pose_opt_ws/src/maps/octomap_map.bt">
+    <remap from="cloud_in"                      to="/$(arg robot_name)/camera/depth_registered/points"/>
+    <param name="base_frame_id"                 value="/$(arg robot_name)/base_footprint"/>
+    <param name="sensor_model/max_range"        value="2"/> 
+    <param name="filter_ground"                 value="true"/>
+    <param name="resolution"                    value="0.01"/>
+    <param name="latch"                         value="false"/>
+  </node>
+
 
 </launch>
