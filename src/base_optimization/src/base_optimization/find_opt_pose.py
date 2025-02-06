@@ -1,3 +1,4 @@
+import octomap_msgs.msg
 import rospy
 import tf.transformations
 import tf2_ros
@@ -5,9 +6,11 @@ import tf
 import tf2_geometry_msgs
 import tf
 import numpy as np
+import ros_numpy
 from visualization_msgs.msg import Marker
 from geometry_msgs.msg import PoseStamped
 from move_base_msgs.msg import MoveBaseActionGoal
+from sensor_msgs.msg import PointCloud2
 
 from reach_space_modeling.generate_pointcloud.gen_cloud_GUI import GenereatePointCloud
 from reach_space_modeling.opt_problem.eqn_solv_opt import solve_eqn_prob
@@ -19,6 +22,7 @@ from pymoo.optimize import minimize
 from pymoo.termination.robust import RobustTermination
 from pymoo.termination.ftol import SingleObjectiveSpaceTermination
 
+from base_optimization.srv import octomap2cloud, octomap2cloudResponse
 
 
 def send_opt_base_pose(x_base, y_base, theta_base):
@@ -102,6 +106,24 @@ def handle_des_EE_pose(data):
     des_pose = np.concatenate((des_position, des_orientation))
 
     tmp_pub.publish(data)
+    
+    # request the conversion from octomap to point cloud
+    rospy.loginfo("Waiting for service '/locobot/octomap2cloud_converter_srv' ...")
+    rospy.wait_for_service("/locobot/octomap2cloud_converter_srv")
+    octomap2cloud_srv = rospy.ServiceProxy("/locobot/octomap2cloud_converter_srv", octomap2cloud)
+    
+    rospy.loginfo("Sending a service request to '/locobot/octomap2cloud_converter_srv'...")
+    occ_cloud = octomap2cloud_srv()
+    rospy.loginfo("Response received")
+
+    # convert the PointCloud2 message into a umpy array
+    cloud_np = ros_numpy.numpify(occ_cloud.cloud)
+    
+    print(cloud_np.shape)
+    
+    
+    assert(False)
+    
 
     # find the optimal base pose
     find_opt_base_pose(ell_ref_frame, des_pose)
@@ -154,7 +176,7 @@ ell_center_map = np.array([ell_transformed_msg.pose.position.x,
 rospy.Subscriber("/des_EE_pose", PoseStamped, callback=handle_des_EE_pose)
 tmp_pub = rospy.Publisher("/des_EE_pose_tmp", PoseStamped, queue_size=10)
 
-rospy.sleep(1)
+rospy.sleep(0.5)
 
 # publish on topic to move the base
 move_base_pub = rospy.Publisher("/locobot/move_base/goal", MoveBaseActionGoal, queue_size=10)
