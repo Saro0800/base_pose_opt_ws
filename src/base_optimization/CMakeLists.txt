@@ -177,6 +177,7 @@ catkin_install_python(PROGRAMS
   src/base_optimization/find_opt_pose_multi.py
   src/base_optimization/des_EE_pose_publisher.py
   src/base_optimization/des_EE_pose_publisher_multi.py
+  src/base_optimization/move_to_next_pose.py
   DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
 )
 

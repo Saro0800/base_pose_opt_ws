@@ -9,7 +9,6 @@ import numpy as np
 import ros_numpy
 from visualization_msgs.msg import Marker
 from geometry_msgs.msg import PoseStamped
-from move_base_msgs.msg import MoveBaseAction, MoveBaseGoal
 from sensor_msgs.msg import PointCloud2
 from scipy.spatial.transform import Rotation
 
@@ -29,57 +28,37 @@ from pymoo.termination.robust import RobustTermination
 from pymoo.termination.ftol import SingleObjectiveSpaceTermination
 
 from base_optimization.srv import octomap2cloud, octomap2cloudResponse
-import actionlib
    
 
 def send_opt_base_pose(x_base, y_base, theta_base):
     # received base_pose is a PoseStmaped msg
 
     # create a MoveBaseActionGoal message
-    goal_base_pose = MoveBaseGoal()
+    base_pose = PoseStamped()
 
-    goal_base_pose.target_pose.header.stamp = rospy.Time.now()
-    goal_base_pose.target_pose.header.frame_id = 'map'
+    base_pose.header.stamp = rospy.Time.now()
+    base_pose.header.frame_id = 'map'
 
-    goal_base_pose.target_pose.pose.position.x = x_base
-    goal_base_pose.target_pose.pose.position.y = y_base
-    goal_base_pose.target_pose.pose.position.z = 0
+    base_pose.pose.position.x = x_base
+    base_pose.pose.position.y = y_base
+    base_pose.pose.position.z = 0
 
     quat = tf.transformations.quaternion_from_euler(
         0, 0, np.deg2rad(theta_base), axes='sxyz')
-    goal_base_pose.target_pose.pose.orientation.x = quat[0]
-    goal_base_pose.target_pose.pose.orientation.y = quat[1]
-    goal_base_pose.target_pose.pose.orientation.z = quat[2]
-    goal_base_pose.target_pose.pose.orientation.w = quat[3]
+    base_pose.pose.orientation.x = quat[0]
+    base_pose.pose.orientation.y = quat[1]
+    base_pose.pose.orientation.z = quat[2]
+    base_pose.pose.orientation.w = quat[3]
 
     # publish the goal message
-    rospy.loginfo("Moving the base to the optimal pose...")
-    # move_base_pub.publish(goal_base_pose)
-    move_base_client.send_goal(goal_base_pose)
+    rospy.loginfo("Sending a new optimal base pose...")
+    next_pose_topic.publish(base_pose)
     
 
 
 def find_opt_base_pose(ell_frame_link, des_pose_multi, point_cloud):
-    base_pos = None
-    first = True
+    
     while len(des_pose_multi) > 0:
-        if base_pos is not None:
-            send_opt_base_pose(base_pos[0], base_pos[1], base_pos[2])
-            
-            still_to_reach = []
-            for p in des_pose_multi:
-                # if inside the outer and outside the inner
-                if ((res.X[0]-p.x)/ell_axis[0])**2 + ((res.X[1]-p.y)/ell_axis[1])**2 + ((ell_center_map[2]-p.z)/ell_axis[2])**2 <= 1 and\
-                    ((res.X[0]-p.x)/(0.3*ell_axis[0]))**2 + ((res.X[1]-p.y)/(0.3*ell_axis[1]))**2 + ((ell_center_map[2]-p.z)/(0.3*ell_axis[2]))**2 > 1:
-                    print("point ({:.2f}, {:.2f}, {:.2f}) is reachable".format(p.x, p.y, p.z))
-                else:
-                    still_to_reach.append(p)
-            
-            if len(still_to_reach) > 0:
-                des_pose_multi = still_to_reach
-            else:
-                break
-
         rospy.loginfo("Looking for an optimal base pose...")
         # define the optimization problem to find the optimal base pose
 
@@ -118,14 +97,20 @@ def find_opt_base_pose(ell_frame_link, des_pose_multi, point_cloud):
         base_pos = np.dot(homog_matr, np.array(
             [-ell_center_base[0], -ell_center_base[1], 0, 1]))
         base_pos[2] = res.X[2]
+        
+        send_opt_base_pose(base_pos[0], base_pos[1], base_pos[2])
+        
+        still_to_reach = []
+        for p in des_pose_multi:
+            # if inside the outer and outside the inner
+            if ((res.X[0]-p.x)/ell_axis[0])**2 + ((res.X[1]-p.y)/ell_axis[1])**2 + ((ell_center_map[2]-p.z)/ell_axis[2])**2 <= 1 and\
+                ((res.X[0]-p.x)/(0.3*ell_axis[0]))**2 + ((res.X[1]-p.y)/(0.3*ell_axis[1]))**2 + ((ell_center_map[2]-p.z)/(0.3*ell_axis[2]))**2 > 1:
+                print("point ({:.2f}, {:.2f}, {:.2f}) is reachable".format(p.x, p.y, p.z))
+            else:
+                still_to_reach.append(p)
+        
+        des_pose_multi = still_to_reach
 
-        # mechanism to check if the robot is still navigating or manipulating
-        if first == False:
-            # wait for the result
-            move_base_client.wait_for_result()
-        else:
-            first = False
-    
     print("All desired poses reached")
 
 
@@ -217,9 +202,8 @@ tmp_pub = rospy.Publisher("/des_EE_pose_tmp", PoseStamped, queue_size=10)
 
 rospy.sleep(0.5)
 
-# publish on topic to move the base
-move_base_client = actionlib.SimpleActionClient("/locobot/move_base", MoveBaseAction)
-move_base_client.wait_for_server()
+# publish on topic which add a new optimal base pose to a queue
+next_pose_topic = rospy.Publisher("/locobot/add_opt_base_pose", PoseStamped, queue_size=100)
 
 print()
 rospy.loginfo("Waiting for the desired end-effector pose...")
