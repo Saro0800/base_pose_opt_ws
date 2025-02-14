@@ -92,7 +92,8 @@ class BasePoseOptProblem(ElementwiseProblem):
                 x_multi.append(p_Rell[0])
                 
             # compute how many des poses are inside the ellipsoid
-            if ((x[0]-p.x)/(0.1*a))**2 + ((x[1]-p.y)/(0.1*b))**2 + ((zc-p.z)/(0.1*c))**2 <= 1:
+            if ((x[0]-p.x)/(0.3*a))**2 + ((x[1]-p.y)/(0.3*b))**2 + ((zc-p.z)/(0.3*c))**2 <= 1:
+                pose_reached_multi = pose_reached_multi - 1
                 pose_reached_multi_inner = pose_reached_multi_inner + 1
                 
         
@@ -105,7 +106,8 @@ class BasePoseOptProblem(ElementwiseProblem):
         # constrs = [((x[0]-xp)/a)**2 + ((x[1]-yp)/b)**2 + ((zc-zp)/c)**2 - 1]
         constrs = [-pose_reached_multi + 1,
                    - np.sum(x_multi),
-                   pose_reached_multi_inner]
+                   pose_reached_multi_inner
+                ]
         out["G"] = np.row_stack(constrs)
 
         # define the objective function
