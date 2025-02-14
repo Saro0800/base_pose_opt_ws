@@ -47,7 +47,7 @@ Visualization Manager:
         Y: 0
         Z: 0
       Plane: XY
-      Plane Cell Count: 10
+      Plane Cell Count: 50
       Reference Frame: <Fixed Frame>
       Value: true
     - Alpha: 1
@@ -724,19 +724,19 @@ Visualization Manager:
     - Class: rviz/Group
       Displays:
         - Class: rviz/Marker
-          Enabled: true
+          Enabled: false
           Marker Topic: /viz_pointcloud
           Name: Point cloud
           Namespaces:
             {}
           Queue Size: 100
-          Value: true
+          Value: false
         - Class: rviz/Marker
           Enabled: true
           Marker Topic: /viz_reachability_ellipsoid
           Name: Ellipsoid
           Namespaces:
-            {}
+            "": true
           Queue Size: 100
           Value: true
         - Class: rviz/Marker
@@ -744,7 +744,7 @@ Visualization Manager:
           Marker Topic: /viz_ellipsoid_center
           Name: Ellipsoid center
           Namespaces:
-            {}
+            "": true
           Queue Size: 100
           Value: true
       Enabled: true
@@ -764,6 +764,14 @@ Visualization Manager:
       Shape: Axes
       Topic: /des_EE_pose
       Unreliable: false
+      Value: true
+    - Class: rviz/Marker
+      Enabled: true
+      Marker Topic: /des_EE_pose_multi
+      Name: Desired Multi poses
+      Namespaces:
+        {}
+      Queue Size: 100
       Value: true
   Enabled: true
   Global Options:
@@ -793,7 +801,7 @@ Visualization Manager:
   Views:
     Current:
       Class: rviz/Orbit
-      Distance: 10.028559684753418
+      Distance: 6.887563705444336
       Enable Stereo Rendering:
         Stereo Eye Separation: 0.05999999865889549
         Stereo Focal Distance: 1

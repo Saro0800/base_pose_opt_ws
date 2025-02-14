@@ -48,6 +48,7 @@
     pkg="robot_state_publisher"
     type="robot_state_publisher"
     ns="$(arg robot_name)">
+    <param name="publish_frequency" value="10"/>
   </node>
 
   <node if="$(arg use_rviz)"

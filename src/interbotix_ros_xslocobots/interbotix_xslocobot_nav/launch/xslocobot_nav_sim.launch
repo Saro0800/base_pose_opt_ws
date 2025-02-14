@@ -219,5 +219,15 @@
     <param name="latch"                         value="true"/>
   </node>
 
+  <!-- custom octomap to point cloud converter node -->
+  <node
+    pkg="base_optimization"
+    type="octo2cloud_converter_node"
+    respawn="false"
+    name="octo2cloud_converter_node"
+    output="screen"
+    ns="$(arg robot_name)">
+  </node>
+
 
 </launch>

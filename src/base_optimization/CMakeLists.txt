@@ -174,7 +174,9 @@ target_link_libraries(octo2cloud_converter_node
 ## in contrast to setup.py, you can choose the destination
 catkin_install_python(PROGRAMS
   src/base_optimization/find_opt_pose.py
+  src/base_optimization/find_opt_pose_multi.py
   src/base_optimization/des_EE_pose_publisher.py
+  src/base_optimization/des_EE_pose_publisher_multi.py
   DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
 )
 

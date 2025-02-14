@@ -15,7 +15,9 @@ from sensor_msgs.msg import PointCloud2
 from reach_space_modeling.generate_pointcloud.gen_cloud_GUI import GenereatePointCloud
 from reach_space_modeling.opt_problem.eqn_solv_opt import solve_eqn_prob
 from reach_space_modeling.srv import ell_params, ell_paramsResponse
-from base_optimization.problem_formulation_align import BasePoseOptProblem
+# from base_optimization.problem_formulation_align import BasePoseOptProblem
+from base_optimization.problem_formulation_align_collision import BasePoseOptProblem
+
 
 from pymoo.algorithms.soo.nonconvex.pso import PSO
 from pymoo.optimize import minimize
@@ -49,10 +51,10 @@ def send_opt_base_pose(x_base, y_base, theta_base):
     move_base_pub.publish(goal_base_pose)
 
 
-def find_opt_base_pose(ell_frame_link, des_pose):
+def find_opt_base_pose(ell_frame_link, des_pose, point_cloud):
     rospy.loginfo("Looking for an optimal base pose...")
     # define the optimization problem to find the optimal base pose
-    problem = BasePoseOptProblem(ell_center_map, ell_axis, des_pose)
+    problem = BasePoseOptProblem(ell_center_map, ell_axis, des_pose, point_cloud)
 
     # solve the optimization problem using the PSO algorithm
     algorithm = PSO()
@@ -102,7 +104,7 @@ def handle_des_EE_pose(data):
     des_orientation = tf.transformations.euler_from_quaternion(np.array(
         [data.pose.orientation.x, data.pose.orientation.y, data.pose.orientation.z, data.pose.orientation.w]))
     des_orientation = np.rad2deg(des_orientation)
-    print(des_orientation)
+
     des_pose = np.concatenate((des_position, des_orientation))
 
     tmp_pub.publish(data)
@@ -118,15 +120,9 @@ def handle_des_EE_pose(data):
 
     # convert the PointCloud2 message into a umpy array
     cloud_np = ros_numpy.numpify(occ_cloud.cloud)
-    
-    print(cloud_np.shape)
-    
-    
-    assert(False)
-    
-
+      
     # find the optimal base pose
-    find_opt_base_pose(ell_ref_frame, des_pose)
+    find_opt_base_pose(ell_ref_frame, des_pose, cloud_np)
 
 
 # create a ROS node

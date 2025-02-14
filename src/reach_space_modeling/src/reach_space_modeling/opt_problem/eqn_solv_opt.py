@@ -204,7 +204,7 @@ if __name__=="__main__":
     ell_params_srv = rospy.Service("get_ellipsoid_params", ell_params, give_ell_params)
 
     print("Start publishing message")
-    while not rospy.is_shutdown():
+    for i in range(10):
         pub_ellipsoids.publish(marker_msg)
         marker_msg.header.stamp = rospy.Time.now()
         rate.sleep()
@@ -217,3 +217,4 @@ if __name__=="__main__":
         pub_cloud.publish(cloud_msg)
         rate.sleep()
 
+    rospy.spin()
