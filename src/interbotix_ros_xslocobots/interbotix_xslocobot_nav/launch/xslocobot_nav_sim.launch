@@ -229,5 +229,16 @@
     ns="$(arg robot_name)">
   </node>
 
+  <!-- node to find the ellipsoid equation -->
+  <node
+    pkg="reach_space_modeling"
+    type="eqn_solv_opt.py"
+    respawn="false"
+    name="find_ell_equation_node"
+    output="screen"
+    ns="$(arg robot_name)">
+  </node>
+
+
 
 </launch>
