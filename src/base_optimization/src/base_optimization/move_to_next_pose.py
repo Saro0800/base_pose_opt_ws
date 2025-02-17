@@ -31,7 +31,7 @@ while True:
     if len(opt_base_poses)<=0:
         rospy.sleep(10)
     else:
-        rospy.sleep(10)
+        rospy.sleep(2)
         
         # extract the first element (oldest inserted)
         nxt_pose = opt_base_poses.pop(0)
