@@ -20,20 +20,21 @@
 
   <arg name="capabilities" default=""/>
   <arg name="disable_capabilities" default=""/>
-  <arg name="robot_model"  default=""/>
-  <arg name="robot_name" default=""/>
-  <arg name="show_lidar" default=""/>
+  <arg name="robot_model"  default="locobot_wx250s"/>
+  <arg name="robot_name" default="locobot"/>
+  <arg name="show_lidar" default="true"/>
   <arg name="external_srdf_loc" default=""/>
-  <arg name="dof" default=""/>
-  <arg name="use_camera" default=""/>
+  <arg name="dof" default="6"/>
+  <arg name="use_camera" default="true"/>
 
-  <include file="$(find interbotix_xslocobot_moveit)/launch/planning_context.launch">
-    <arg name="robot_model"        value="$(arg robot_model)"/>
-    <arg name="robot_name"         value="$(arg robot_name)"/>
-    <arg name="show_lidar"         value="$(arg show_lidar)"/>
-    <arg name="external_srdf_loc"  value="$(arg external_srdf_loc)"/>
-    <arg name="dof"                value="$(arg dof)"/>
-  </include>
+  <group ns="$(arg robot_name)">
+    <include file="$(find interbotix_xslocobot_moveit)/launch/planning_context.launch">
+      <arg name="robot_model"        value="$(arg robot_model)"/>
+      <arg name="robot_name"         value="$(arg robot_name)"/>
+      <arg name="show_lidar"         value="$(arg show_lidar)"/>
+      <arg name="external_srdf_loc"  value="$(arg external_srdf_loc)"/>
+      <arg name="dof"                value="$(arg dof)"/>
+    </include>
 
   <!-- load these non-default MoveGroup capabilities (space seperated) -->
   <!--
@@ -50,7 +51,6 @@
                 move_group/ClearOctomapService
                 " />
   -->
-
     <!-- Planning Functionality -->
     <include ns="move_group" file="$(find interbotix_xslocobot_moveit)/launch/planning_pipeline.launch.xml">
       <arg name="pipeline" value="ompl" />
@@ -87,5 +87,6 @@
       <param name="planning_scene_monitor/publish_state_updates" value="$(arg publish_monitored_planning_scene)" />
       <param name="planning_scene_monitor/publish_transforms_updates" value="$(arg publish_monitored_planning_scene)" />
     </node>
+  </group>
 
 </launch>

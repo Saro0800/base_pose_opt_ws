@@ -1,18 +1,19 @@
 <launch>
 
-  <arg name="robot_model"                       default=""/>
+  <arg name="robot_model"                       default="locobot_wx250s"/>
   <arg name="robot_name"                        default="locobot"/>
-  <arg name="show_lidar"                        default="false"/>
+  <arg name="show_lidar"                        default="true"/>
   <arg name="external_urdf_loc"                 default=""/>
   <arg name="use_rviz"                          default="false"/>
   <arg name="use_camera"                        default="false"/>
   <arg name="mode_configs"                      default="$(find interbotix_xslocobot_ros_control)/config/modes.yaml"/>
-  <arg name="dof"                               default="5"/>
+  <arg name="dof"                               default="6"/>
+  <arg name="on_real_robot"                     default="false"/>
 
   <rosparam file="$(find interbotix_xslocobot_ros_control)/config/$(arg dof)dof_controllers.yaml" command="load" ns="$(arg robot_name)"/>
   <rosparam file="$(find interbotix_xslocobot_ros_control)/config/hardware.yaml" command="load" ns="$(arg robot_name)"/>
 
-  <include file="$(find interbotix_xslocobot_control)/launch/xslocobot_control.launch">
+  <include if="$(arg on_real_robot)" file="$(find interbotix_xslocobot_control)/launch/xslocobot_control.launch">
     <arg name="robot_model"                       value="$(arg robot_model)"/>
     <arg name="robot_name"                        value="$(arg robot_name)"/>
     <arg name="show_lidar"                        value="$(arg show_lidar)"/>

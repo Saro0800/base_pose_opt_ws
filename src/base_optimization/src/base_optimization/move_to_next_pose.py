@@ -29,7 +29,7 @@ rospy.loginfo("Waiting for a new optimal base pose...")
 while True:
     # check for empy
     if len(opt_base_poses)<=0:
-        rospy.sleep(10)
+        rospy.sleep(2)
     else:
         rospy.sleep(2)
         

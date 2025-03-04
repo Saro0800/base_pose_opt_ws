@@ -161,23 +161,23 @@ if __name__=="__main__":
     gen_cloud = GenereatePointCloud()
     gen_cloud.create_ros_node()
     
-    # wait for gazebo to be unpaued
-    rospy.wait_for_service("/gazebo/get_physics_properties")
+    # # wait for gazebo to be unpaued
+    # rospy.wait_for_service("/gazebo/get_physics_properties")
 
-    get_physics = rospy.ServiceProxy("/gazebo/get_physics_properties", GetPhysicsProperties)
+    # get_physics = rospy.ServiceProxy("/gazebo/get_physics_properties", GetPhysicsProperties)
     
-    rospy.loginfo("Waiting for Gazebo to be unpaused...")
+    # rospy.loginfo("Waiting for Gazebo to be unpaused...")
     
-    while not rospy.is_shutdown():
-        try:
-            physics = get_physics()
-            if physics.pause != True:  # Gazebo is unpaused if gravity is nonzero
-                rospy.loginfo("Gazebo unpaused! Proceeding...")
-                break
-        except rospy.ServiceException:
-            pass  # If service is not available, keep trying
+    # while not rospy.is_shutdown():
+    #     try:
+    #         physics = get_physics()
+    #         if physics.pause != True:  # Gazebo is unpaused if gravity is nonzero
+    #             rospy.loginfo("Gazebo unpaused! Proceeding...")
+    #             break
+    #     except rospy.ServiceException:
+    #         pass  # If service is not available, keep trying
 
-        rospy.sleep(1)
+    #     rospy.sleep(1)
     
     gen_cloud.create_GUI()
     gen_cloud.from_extern = True

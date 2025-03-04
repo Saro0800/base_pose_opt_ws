@@ -11,27 +11,13 @@ rospy.init_node("des_EE_pose_publisher", anonymous=True)
 
 # define a the desired points
 des_points = []
-# des_points.append([0., 0., 0.2])
-# des_points.append([0.25, 0.25, 0.2])
-# des_points.append([-0.25, 0.25, 0.2])
+des_points.append([3.5, 0., 0.2])
+des_points.append([3.5, -0.25, 0.3])
+des_points.append([3.5, -0.5, 0.25])
+des_points.append([3.5, -0.75, 0.15])
+des_points.append([3.5, -1., 0.4])
+des_points.append([3.5, -1.25, 0.2])
 
-des_points.append([0., 2., 0.2])
-des_points.append([0., 2.2, 0.2])
-des_points.append([0.2, 2., 0.2])
-des_points.append([0.2, 2.2, 0.2])
-
-des_points.append([-2, 2., 0.2])
-des_points.append([-2, 2.2, 0.2])
-des_points.append([-2.2, 2., 0.2])
-des_points.append([-2.2, 2.2, 0.2])
-
-des_points.append([0., 0.1, 0.2])
-des_points.append([0., 0.25, 0.2])
-des_points.append([0., 0.50, 0.2])
-des_points.append([0., 0.75, 0.2])
-des_points.append([0., 1.0, 0.2])
-des_points.append([0., 1.25, 0.2])
-des_points.append([0., 1.5, 0.2])
 
 # create a Marker message
 des_EE_pose_multi = Marker()

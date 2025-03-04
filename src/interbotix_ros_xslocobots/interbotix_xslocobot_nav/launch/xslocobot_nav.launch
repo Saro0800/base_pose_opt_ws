@@ -1,19 +1,22 @@
 <launch>
 
-  <arg name="robot_model"                       default=""/>
+  <arg name="robot_model"                       default="locobot_wx250s"/>
   <arg name="robot_name"                        default="locobot"/>
-  <arg name="use_lidar"                         default="false"/>
+  <arg name="use_lidar"                         default="true"/>
   <arg name="show_lidar"                        default="$(arg use_lidar)"/>
   <arg name="external_urdf_loc"                 default=""/>
-  <arg name="use_rviz"                          default="false"/>
-  <arg name="base_type"                         default="$(optenv INTERBOTIX_XSLOCOBOT_BASE_TYPE create3)"/> <!-- 'kobuki', 'create3' -->
+  <arg name="use_rviz"                          default="true"/>
+  <arg name="rviz_frame"                        default="map"/>
+  <arg name="rvizconfig"                        default="$(find interbotix_xslocobot_descriptions)/rviz/xslocobot_description.rviz" />
+  <arg name="base_type"                         default="kobuki"/> <!-- 'kobuki', 'create3' -->
   <arg name="localization"                      default="false"/>
   <arg name="rtabmap_args"                      default=""/>
   <arg name="use_rtabmapviz"                    default="false"/>
   <arg name="rtabmapviz_args"                   default=""/>
-  <arg name="database_path"                     default="~/.ros/rtabmap.db"/>
+  <arg name="database_path"                     default="~/Desktop/base_pose_opt_ws/src/maps/rtabmap_real.db"/>
   <arg name="camera_tilt_angle"                 default="0.2618"/>
-  <arg name="launch_driver"                     default="true"/>
+  <arg name="launch_driver"                     default="false"/>
+  <arg name="use_joystick"                      default="false"/>
 
   <arg if="$(eval base_type == 'kobuki')"  name="move_base_cmd_vel_topic" default="mobile_base/commands/velocity"/>
   <arg if="$(eval base_type == 'create3')" name="move_base_cmd_vel_topic" default="/mobile_base/cmd_vel"/>
@@ -68,7 +71,7 @@
     <arg name="use_dock"                          value="true"/>
   </include>
 
-  <group ns="$(arg robot_name)/rtabmap">
+  <!-- <group ns="$(arg robot_name)/rtabmap">
 
     <node
       pkg="nodelet"
@@ -131,7 +134,7 @@
       <param name="odom_sensor_sync"              value="false"/>
       <param name="wait_for_transform_duration"   value="0.2"/>
       <param name="database_path"                 value="$(arg database_path)"/>
-      <param name="approx_sync"                   value="true"/>
+      <param name="approx_sync"                   value="false"/>
       <param name="queue_size"                    value="10"/>
       <param name="tag_linear_variance"           value="0.0001"/>
       <param name="tag_angular_variance"          value="9999"/>
@@ -156,9 +159,9 @@
       <param name="wait_for_transform"            value="true"/>
       <remap from="scan"                          to="/$(arg robot_name)/scan"/>
     </node>
-  </group>
+  </group> -->
 
-  <node
+  <!-- <node
     pkg="move_base"
     type="move_base"
     respawn="false"
@@ -182,13 +185,122 @@
     <remap from="cmd_vel"                         to="$(arg move_base_cmd_vel_topic)"/>
     <remap from="map"                             to="rtabmap/grid_map"/>
     <remap from="odom"                            to="$(arg odom_topic)"/>
-  </node>
+  </node> -->
 
   <node
     pkg="rostopic"
     type="rostopic"
     name="camera_tilt"
     args="pub -1 commands/joint_group interbotix_xs_msgs/JointGroupCommand --latch '{name: 'camera', cmd: [0, $(arg camera_tilt_angle)]}'"
+    ns="$(arg robot_name)">
+  </node>
+
+  <include file="$(find interbotix_xslocobot_ros_control)/launch/xslocobot_ros_control.launch">
+
+  </include>
+
+  <include file="$(find interbotix_xslocobot_moveit)/launch/move_group.launch">
+    
+  </include>
+
+  <group if="$(arg use_joystick)">
+    <node
+      pkg="joy"
+      type="joy_node"
+      name="ps3_joy"
+      output="screen"
+      ns="$(arg robot_name)">
+      <param name="dev"                             value="/dev/input/js0"/>
+      <remap from="joy"                             to="commands/joy_raw"/>
+    </node>
+
+    <node
+      pkg="interbotix_xslocobot_joy"
+      type="xslocobot_joy"
+      name="xslocobot_joy"
+      output="screen"
+      ns="$(arg robot_name)">
+      <param name="threshold"                       value="0.75"/>
+      <param name="controller"                      value="ps4"/>
+    </node>
+
+    <node
+      pkg="interbotix_xslocobot_joy"
+      type="xslocobot_robot"
+      name="xslocobot_robot"
+      output="screen"
+      ns="$(arg robot_name)">
+      <param name="robot_model"                     value="$(arg robot_model)"/>
+      <param name="use_base"                        value="true"/>
+      <param name="base_type"                       value="$(arg base_type)"/>
+    </node>
+  </group>
+
+  <node if="$(arg use_rviz)"
+    name="rviz"
+    pkg="rviz"
+    type="rviz"
+    args="-f $(arg rviz_frame) -d $(arg rvizconfig)"
+    ns="$(arg robot_name)">
+    <remap from="/clicked_point" to="clicked_point"/>
+    <remap from="/initialpose" to="initialpose"/>
+    <remap from="/move_base_simple/goal" to="move_base_simple/goal"/>
+  </node> 
+
+   <!-- octomap_server node -->
+  <node
+    pkg="octomap_server"
+    type="octomap_server_node"
+    respawn="false"
+    name="octomap_server_node"
+    output="screen"
+    ns="$(arg robot_name)/octomap_server"
+    args="/home/rosario/Desktop/base_pose_opt_ws/src/maps/octomap_map_real.bt">
+    <remap from="cloud_in"                      to="/$(arg robot_name)/camera/depth_registered/points"/>
+    <param name="base_frame_id"                 value="/$(arg robot_name)/base_footprint"/>
+    <param name="sensor_model/max_range"        value="2"/> 
+    <param name="filter_ground"                 value="true"/>
+    <param name="resolution"                    value="0.02"/>
+    <param name="latch"                         value="true"/>
+  </node>
+
+  <!-- custom octomap to point cloud converter node -->
+  <node
+    pkg="base_optimization"
+    type="octo2cloud_converter_node"
+    respawn="false"
+    name="octo2cloud_converter_node"
+    output="screen"
+    ns="$(arg robot_name)">
+  </node>
+
+  <!-- node to find the ellipsoid equation -->
+  <node
+    pkg="reach_space_modeling"
+    type="eqn_solv_opt.py"
+    respawn="false"
+    name="find_ell_equation_node"
+    output="screen"
+    ns="$(arg robot_name)">
+  </node>
+
+  <!-- node to find optimal base poses -->
+  <node
+    pkg="base_optimization"
+    type="find_opt_pose_multi.py"
+    respawn="false"
+    name="find_opt_pose_multi"
+    output="screen"
+    ns="$(arg robot_name)">
+  </node>
+
+  <!-- node to move towards all the opt base poses -->
+  <node
+    pkg="base_optimization"
+    type="move_to_next_pose.py"
+    respawn="false"
+    name="move_to_next_pose"
+    output="screen"
     ns="$(arg robot_name)">
   </node>
 
