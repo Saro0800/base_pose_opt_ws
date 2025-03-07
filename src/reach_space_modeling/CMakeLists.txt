@@ -163,7 +163,7 @@ catkin_install_python(PROGRAMS
     src/reach_space_modeling/generate_pointcloud/gen_cloud_GUI.py
     src/reach_space_modeling/generate_pointcloud/gen_cloud_singular_conf.py
     src/reach_space_modeling/generate_pointcloud/gen_cloud_reach_metric.py
-    src/reach_space_modeling/opt_problem/eqn_solv_opt.py
+    src/reach_space_modeling/opt_problem/find_ellips_eq.py
     DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
 )
 

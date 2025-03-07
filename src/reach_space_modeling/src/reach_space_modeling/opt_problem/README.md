@@ -22,9 +22,9 @@ When an object of this class is instantiated, a set of few operations are comple
 A second method, namely *_evaluate*, is defined. It is the function that is called at every iteration of the optimization problem.  It retrieves the current solution and computes the values of the objective function until now.
 
 ### Usage
-It is possible to obtain the equation of the ellipsoid by running the script *eqn_solv_opt.py*:
+It is possible to obtain the equation of the ellipsoid by running the script *find_ellips_eq.py*:
 ```
-python3 opt_problem/eqn_solv_opt.py
+python3 opt_problem/find_ellips_eq.py
 ```
 This script is based on the GUI described above to select the URDF of the robot, to select the important joints, the number of samples per joint and, finally, to genereate the point cloud exploited by the optimization problem.
 
