@@ -41,43 +41,10 @@ class GenereatePointCloudWithMetric(GenereatePointCloud):
 
         # generate a pose for each samples.
         # the orientation of the poses is always the same
-        pose_angles_RPY = gen_cloud.gen_poses(
+        pose_angles_RPY = self.gen_poses(
             center=c, radius=r, sphere_samples=sphere_samples)
         pose_angles_RPY = np.array(pose_angles_RPY)
         rospy.loginfo("Generated all target poses...")
-
-        if (False):
-            fig = plt.figure()
-            ax = fig.add_subplot(111, projection='3d')
-
-            # for each reachable point...
-            for i, point in enumerate(self.points):
-                # parameter of the sphere
-                c = point
-                r = 0.05
-
-                # plot the center
-                ax.scatter(c[0],
-                           c[1],
-                           c[2],
-                           c='blue',
-                           alpha=0.2)
-
-                # plot an arrow for each pose
-                ax.quiver(sphere_samples[:, 0] + c[0],
-                          sphere_samples[:, 1] + c[1],
-                          sphere_samples[:, 2] + c[2],
-                          -sphere_samples[:, 0],
-                          -sphere_samples[:, 1],
-                          -sphere_samples[:, 2])
-
-                ax.scatter(sphere_samples[:, 0] + c[0],
-                           sphere_samples[:, 1] + c[1],
-                           sphere_samples[:, 2] + c[2],
-                           c='red',
-                           s=0.1)
-
-            plt.show()
 
         # Load the robot chain from a URDF file for the KDL library
         self.init_KDL_model()
@@ -260,6 +227,7 @@ class GenereatePointCloudWithMetric(GenereatePointCloud):
         ax.set_xlabel('X')
         ax.set_ylabel('Y')
         ax.set_zlabel('Z')
+        ax.axis("equal")
 
         # figure of a section (xz plane) of the reachability cloud with measure
         tolerance = 0.01
