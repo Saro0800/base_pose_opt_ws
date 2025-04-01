@@ -33,32 +33,19 @@ def solve_eqn_prob(points, pnt_weights, alg_name, link=None, center=None, viz_re
         center, points, pnt_weights, viz_res, None, None)
 
     # define the weights of the points and of the volume, and the optimization algorithm
-    if alg_name == "PatternSearch":
-        problem.num_points_wt = 1
-        problem.volume_wt = pow(10, int(math.log10(points.shape[0])-1))
+    problem.num_points_wt = 1
+    problem.volume_wt = pow(10, int(math.log10(points.shape[0])-1))
 
-        x0 = np.array([0.1, 0.1, 0.1, problem.center[0],
-                      problem.center[1], problem.center[2]])
-        algorithm = PatternSearch(
-            delta=0.1,
-            rho=0.1,
-            step_size=0.1,
-            x0=x0)
-
-    elif alg_name == "GA":
-        problem.num_points_wt = 1
-        problem.volume_wt = pow(10, int(math.log10(points.shape[0])-1))
-
-        x0 = np.array(
+    x0 = np.array(
             [[1, 1, 1, problem.center[0], problem.center[1], problem.center[2]]])
+
+    if alg_name == "GA":
         pop = Population.new(X=x0)
         algorithm = GA(sampling=pop)
 
     elif alg_name == "PSO":
-        problem.num_points_wt = 1
-        problem.volume_wt = 1
-
-        algorithm = PSO()
+        init_pop = np.repeat(x0, 25, axis=0)
+        algorithm = PSO(sampling=init_pop)
 
     termination = RobustTermination(
         SingleObjectiveSpaceTermination(tol=pow(10, -6))
@@ -78,7 +65,6 @@ def solve_eqn_prob(points, pnt_weights, alg_name, link=None, center=None, viz_re
     print(res.F)
 
     return res
-
 
 def create_ell_msg(points, link, res, center=None):
     # retrieve the solution of the opt problem
@@ -125,7 +111,6 @@ def create_ell_msg(points, link, res, center=None):
 
     return marker_msg
 
-
 def create_cloud_msg(points, link):
     marker_msg = Marker()
     marker_msg.header.frame_id = link
@@ -155,7 +140,6 @@ def create_cloud_msg(points, link):
         marker_msg.colors.append(ColorRGBA(1.0, 0.0, 0.0, 0.2))
 
     return marker_msg
-
 
 def give_ell_params(req):
     a = res.X[0]
@@ -194,6 +178,7 @@ if __name__ == "__main__":
 
     # gen_cloud.create_GUI()
 
+    # generate the point cloud
     gen_cloud.from_extern = True
     gen_cloud.urdf_file_path = "/home/rosario/Desktop/base_pose_opt_ws/src/reach_space_modeling/src/reach_space_modeling/generate_pointcloud/model/mobile_wx250s.urdf"
     gen_cloud.parse_urdf()
@@ -204,9 +189,11 @@ if __name__ == "__main__":
     gen_cloud.generate_point_cloud()
     rospy.loginfo("Reachability point cloud created...")
 
+    # compute the reachability index for each point
     gen_cloud.generate_reachability_index()
-    # gen_cloud.vis_cloud_with_measure()
+    gen_cloud.vis_cloud_with_measure()
 
+    # count how many points with a given reach measure are available
     freq = np.zeros(int(np.max(gen_cloud.points_reach_measure)+1), dtype=int)
     for i in range(gen_cloud.points_reach_measure.shape[0]):
         freq[int(gen_cloud.points_reach_measure[i])] = freq[int(
@@ -215,7 +202,7 @@ if __name__ == "__main__":
     for i in range(freq.shape[0]):
         print("Points reachable with {:d} poses: {:d}".format(i, freq[i]))
 
-    # weighted mean
+    # weighted mean of the reachability index
     w_mean = 0
     for i in range(freq.shape[0]):
         w_mean = w_mean + freq[int(i)]*float(i)
@@ -237,9 +224,8 @@ if __name__ == "__main__":
 
     start = time.time()
 
-    # alg_name = "PatternSearch"
-    alg_name = "GA"
-    # alg_name = "PSO"
+    # alg_name = "GA"
+    alg_name = "PSO"
     res = solve_eqn_prob(points, pnt_weights, alg_name,
                          link, center, viz_res=True)
 

@@ -8,16 +8,15 @@ from pymoo.core.problem import ElementwiseProblem
 
 class EllipsoidEquationOptProblem(ElementwiseProblem):
     def __init__(self, *args):
-        # retrieve the set of points
-        self.center = args[0]
-        self.points = args[1]
-        self.pnt_weights = args[2]
+        self.center = args[0]           # retrieve the center estimation
+        self.points = args[1]           # retrieve the set of points
+        self.pnt_weights = args[2]      # retrieve the weights of point based on the reach. measure
         self.num_points = self.points.shape[0]
-        self.viz_res = args[3]
-        self.num_points_wt = args[4]
-        self.volume_wt = args[5]
+        self.viz_res = args[3]          # retrieve the falg to visualize the result
+        self.num_points_wt = args[4]    # retrieve the weight of the number of points included in the equation
+        self.volume_wt = args[5]        # retrieve the weight of the ellipsoid volume
 
-        # retrieve the passed center
+        # check if the passed center is None and compute an estimation
         if self.center is None:
             # compute an estimation of the center
             xc = np.mean([np.min(self.points[:,0]), np.max(self.points[:,0])])
@@ -28,6 +27,7 @@ class EllipsoidEquationOptProblem(ElementwiseProblem):
         if self.viz_res==True:
             print("Center estimation: {:.4f}, {:.4f}, {:.4f}".format(self.center[0], self.center[1], self.center[2]))
 
+        # init. the optimization problem
         super().__init__(n_var = 6,
                          n_obj = 1,
                          n_ieq_constr = 3,
