@@ -65,12 +65,15 @@ class EllipsoidEquationOptProblem(ElementwiseProblem):
         mask = ((xp-xc)**2)/(aI**2) + ((yp-yc)**2)/(bI**2) + ((zp-zc)**2)/(cI**2) - 1
         inner_wgt = np.sum(outer_pnt_weights[mask<=0])
         
-
+        # compute the volumes
+        outer_vol = 4/3*np.pi*aO*bO*cO
+        inner_vol = 4/3*np.pi*aI*bI*cI
         
         
         # constraints definition
-        constrs = [-x[0], -x[1], -x[2], -x[3], -x[4], -x[5]]
+        constrs = [-x[0], -x[1], -x[2], x[3]-x[0], x[4]-x[1], x[5]-x[2]]
         out["G"] = np.row_stack(constrs)
     
         # objective function definition
-        out["F"] = self.num_points_wt*outer_wgt + self.volume_wt*4/3*np.pi*aO*bO*cO -self.num_points_wt*inner_wgt + self.volume_wt*4/3*np.pi*aI*bI*cI
+        # out["F"] = self.num_points_wt*outer_wgt + self.volume_wt*4/3*np.pi*aO*bO*cO -self.num_points_wt*inner_wgt + self.volume_wt*4/3*np.pi*aI*bI*cI
+        out["F"] = self.num_points_wt*(outer_wgt - inner_wgt) + self.volume_wt*(outer_vol + inner_vol)
