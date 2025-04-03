@@ -12,8 +12,6 @@ from geometry_msgs.msg import PoseStamped
 from move_base_msgs.msg import MoveBaseActionGoal
 from sensor_msgs.msg import PointCloud2
 
-from reach_space_modeling.generate_pointcloud.gen_cloud_GUI import GenereatePointCloud
-from reach_space_modeling.opt_problem.eqn_solv_opt import solve_eqn_prob
 from reach_space_modeling.srv import ell_params, ell_paramsResponse
 # from base_optimization.problem_formulation_align import BasePoseOptProblem
 from base_optimization.problem_formulation_align_collision import BasePoseOptProblem
@@ -25,6 +23,8 @@ from pymoo.termination.robust import RobustTermination
 from pymoo.termination.ftol import SingleObjectiveSpaceTermination
 
 from base_optimization.srv import octomap2cloud, octomap2cloudResponse
+from gazebo_msgs.srv import GetPhysicsProperties
+
 
 
 def send_opt_base_pose(x_base, y_base, theta_base):
@@ -124,59 +124,77 @@ def handle_des_EE_pose(data):
     # find the optimal base pose
     find_opt_base_pose(ell_ref_frame, des_pose, cloud_np)
 
+if __name__=="__main__":
+    # create a ROS node
+    rospy.init_node('find_opt_pose', anonymous=True)
+    
+    # wait for gazebo to be unpaued
+    rospy.wait_for_service("/gazebo/get_physics_properties")
 
-# create a ROS node
-rospy.init_node('find_opt_pose', anonymous=True)
+    get_physics = rospy.ServiceProxy("/gazebo/get_physics_properties", GetPhysicsProperties)
 
-# retrieve the parameter of the ellipsoid
-rospy.loginfo("Waiting for serive /get_ellipsoid_params...")
-rospy.wait_for_service('get_ellipsoid_params')
-ell_params_srv = rospy.ServiceProxy('get_ellipsoid_params', ell_params)
-rospy.loginfo("Service /get_ellipsoid_params is available")
+    rospy.loginfo("Waiting for Gazebo to be unpaused...")
 
-rospy.loginfo("Sending request to /get_ellipsoid_params...")
-ell_par = ell_params_srv()
-rospy.loginfo("Ellipsoid parameters received: %.4f, %.4f, %.4f, %.4f, %.4f, %.4f",
-              ell_par.xC, ell_par.yC, ell_par.zC, ell_par.a, ell_par.b, ell_par.c)
-rospy.loginfo("Ellipsoid reference frame: %s", ell_par.ell_ref_frame)
+    while not rospy.is_shutdown():
+        try:
+            physics = get_physics()
+            if physics.pause != True:  # Gazebo is unpaused if gravity is nonzero
+                rospy.loginfo("Gazebo unpaused! Proceeding...")
+                break
+        except rospy.ServiceException:
+            pass  # If service is not available, keep trying
 
-ell_center = np.array([ell_par.xC, ell_par.yC, ell_par.zC])
-ell_axis = np.array([ell_par.a, ell_par.b, ell_par.c])
-ell_ref_frame = ell_par.ell_ref_frame
+        rospy.sleep(1)
 
-# transform the center from ell_ref_fram to the fixed frame ("map")
-tmp_pose = PoseStamped()
-tmp_pose.header.stamp = rospy.Time.now()
-tmp_pose.header.frame_id = ell_ref_frame
+    # retrieve the parameter of the ellipsoid
+    rospy.loginfo("Waiting for serive /get_ellipsoid_params...")
+    rospy.wait_for_service('get_ellipsoid_params')
+    ell_params_srv = rospy.ServiceProxy('get_ellipsoid_params', ell_params)
+    rospy.loginfo("Service /get_ellipsoid_params is available")
 
-tmp_pose.pose.position.x = ell_center[0]
-tmp_pose.pose.position.y = ell_center[1]
-tmp_pose.pose.position.z = ell_center[2]
+    rospy.loginfo("Sending request to /get_ellipsoid_params...")
+    ell_par = ell_params_srv()
+    rospy.loginfo("Ellipsoid parameters received: %.4f, %.4f, %.4f, %.4f, %.4f, %.4f",
+                ell_par.xC, ell_par.yC, ell_par.zC, ell_par.a, ell_par.b, ell_par.c)
+    rospy.loginfo("Ellipsoid reference frame: %s", ell_par.ell_ref_frame)
 
-tmp_pose.pose.orientation.x = 0.0
-tmp_pose.pose.orientation.y = 0.0
-tmp_pose.pose.orientation.z = 0.0
-tmp_pose.pose.orientation.w = 1.0
+    ell_center = np.array([ell_par.xC, ell_par.yC, ell_par.zC])
+    ell_axis = np.array([ell_par.a, ell_par.b, ell_par.c])
+    ell_ref_frame = ell_par.ell_ref_frame
 
-tf_buffer = tf2_ros.Buffer()
-tf_listener = tf2_ros.TransformListener(tf_buffer)
+    # transform the center from ell_ref_fram to the fixed frame ("map")
+    tmp_pose = PoseStamped()
+    tmp_pose.header.stamp = rospy.Time.now()
+    tmp_pose.header.frame_id = ell_ref_frame
 
-tf_buffer.can_transform("map", ell_ref_frame, rospy.Time(0))
-transform = tf_buffer.lookup_transform("map", ell_ref_frame, rospy.Time(0), rospy.Duration(1))
-ell_transformed_msg = tf2_geometry_msgs.do_transform_pose(tmp_pose, transform)
+    tmp_pose.pose.position.x = ell_center[0]
+    tmp_pose.pose.position.y = ell_center[1]
+    tmp_pose.pose.position.z = ell_center[2]
 
-ell_center_map = np.array([ell_transformed_msg.pose.position.x,
-                           ell_transformed_msg.pose.position.y,
-                           ell_transformed_msg.pose.position.z])
+    tmp_pose.pose.orientation.x = 0.0
+    tmp_pose.pose.orientation.y = 0.0
+    tmp_pose.pose.orientation.z = 0.0
+    tmp_pose.pose.orientation.w = 1.0
 
-rospy.Subscriber("/des_EE_pose", PoseStamped, callback=handle_des_EE_pose)
-tmp_pub = rospy.Publisher("/des_EE_pose_tmp", PoseStamped, queue_size=10)
+    tf_buffer = tf2_ros.Buffer()
+    tf_listener = tf2_ros.TransformListener(tf_buffer)
 
-rospy.sleep(0.5)
+    tf_buffer.can_transform("map", ell_ref_frame, rospy.Time(0))
+    transform = tf_buffer.lookup_transform("map", ell_ref_frame, rospy.Time(0), rospy.Duration(1))
+    ell_transformed_msg = tf2_geometry_msgs.do_transform_pose(tmp_pose, transform)
 
-# publish on topic to move the base
-move_base_pub = rospy.Publisher("/locobot/move_base/goal", MoveBaseActionGoal, queue_size=10)
+    ell_center_map = np.array([ell_transformed_msg.pose.position.x,
+                            ell_transformed_msg.pose.position.y,
+                            ell_transformed_msg.pose.position.z])
 
-print()
-rospy.loginfo("Waiting for the desired end-effector pose...")
-rospy.spin()
+    rospy.Subscriber("/des_EE_pose", PoseStamped, callback=handle_des_EE_pose)
+    tmp_pub = rospy.Publisher("/des_EE_pose_tmp", PoseStamped, queue_size=10)
+
+    rospy.sleep(0.5)
+
+    # publish on topic to move the base
+    move_base_pub = rospy.Publisher("/locobot/move_base/goal", MoveBaseActionGoal, queue_size=10)
+
+    print()
+    rospy.loginfo("Waiting for the desired end-effector pose...")
+    rospy.spin()

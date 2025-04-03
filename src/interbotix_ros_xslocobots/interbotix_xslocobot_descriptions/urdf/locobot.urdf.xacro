@@ -1,9 +1,9 @@
 <?xml version="1.0" ?>
 <robot name="locobot" xmlns:xacro="http://ros.org/wiki/xacro">
 
-  <xacro:arg name="arm_model"             default=""/>
-  <xacro:arg name="robot_model"           default=""/>
-  <xacro:arg name="base_model"            default=""/>
+  <xacro:arg name="robot_model"           default="locobot_wx250s"/>
+  <xacro:arg name="arm_model"             default="mobile_wx250s"/>
+  <xacro:arg name="base_model"            default="kobuki"/>
   <xacro:arg name="robot_name"            default=""/>
   <xacro:arg name="show_lidar"            default="true"/>
   <xacro:arg name="show_gripper_bar"      default="true"/>

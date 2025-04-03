@@ -215,7 +215,7 @@
     <param name="base_frame_id"                 value="/$(arg robot_name)/base_footprint"/>
     <param name="sensor_model/max_range"        value="2"/> 
     <param name="filter_ground"                 value="true"/>
-    <param name="resolution"                    value="0.025"/>
+    <param name="resolution"                    value="0.02"/>
     <param name="latch"                         value="true"/>
   </node>
 
@@ -232,7 +232,7 @@
   <!-- node to find the ellipsoid equation -->
   <node
     pkg="reach_space_modeling"
-    type="find_ellips_eq_reach_opt2.py"
+    type="find_ellips_eq_all.py"
     respawn="false"
     name="find_ell_equation_node"
     output="screen"
@@ -242,9 +242,9 @@
   <!-- node to find optimal base poses -->
   <node
     pkg="base_optimization"
-    type="find_opt_pose.py"
+    type="find_opt_pose_multi.py"
     respawn="false"
-    name="find_opt_pose"
+    name="find_opt_pose_multi"
     output="screen"
     ns="$(arg robot_name)">
   </node>
@@ -258,9 +258,6 @@
     output="screen"
     ns="$(arg robot_name)">
   </node>
-
-  <include file="$(find interbotix_xslocobot_moveit)/launch/move_group.launch">
-  </include>
 
 
 </launch>

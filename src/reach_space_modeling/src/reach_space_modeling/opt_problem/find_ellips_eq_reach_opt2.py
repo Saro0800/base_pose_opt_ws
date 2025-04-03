@@ -181,8 +181,8 @@ def vis_2d_opt_RS(points, reach_meas, center, out_p, inn_p):
     ell_inn = Ellipse((center[0], center[1]), 2*inn_p[0], 2*inn_p[1])
     out_path = ell_out.get_path().transformed(ell_out.get_transform())
     inn_path = ell_inn.get_path().transformed(ell_inn.get_transform())
-    area = mpath.Path.make_compound_path(out_path, inn_path)
-    area = mpatches.PathPatch(area, linewidth=1.5, edgecolor=(0, 0.5, 0), facecolor=(0, 0.5, 0, 0.1))
+    area = mpath.Path.make_compound_path(inn_path, out_path)
+    area = mpatches.PathPatch(area, linewidth=1.5, edgecolor=(0, 0.5, 0), facecolor=(0, 0.5, 0, 0.5))
     axes[0].add_patch(area)
     axes[0].set_xlabel('X')
     axes[0].set_ylabel('Y', labelpad=10)
@@ -207,7 +207,7 @@ def vis_2d_opt_RS(points, reach_meas, center, out_p, inn_p):
     out_path = ell_out.get_path().transformed(ell_out.get_transform())
     inn_path = ell_inn.get_path().transformed(ell_inn.get_transform())
     area = mpath.Path.make_compound_path(out_path, inn_path)
-    area = mpatches.PathPatch(area, linewidth=1.5, edgecolor=(0, 0.5, 0), facecolor=(0, 0.5, 0, 0.1))
+    area = mpatches.PathPatch(area, linewidth=1.5, edgecolor=(0, 0.5, 0), facecolor=(0, 0.5, 0, 0.5))
     axes[1].add_patch(area)
     axes[1].set_xlabel('X')
     axes[1].set_ylabel('Z', labelpad=10)
@@ -232,7 +232,7 @@ def vis_2d_opt_RS(points, reach_meas, center, out_p, inn_p):
     out_path = ell_out.get_path().transformed(ell_out.get_transform())
     inn_path = ell_inn.get_path().transformed(ell_inn.get_transform())
     area = mpath.Path.make_compound_path(out_path, inn_path)
-    area = mpatches.PathPatch(area, linewidth=1.5, edgecolor=(0, 0.5, 0), facecolor=(0, 0.5, 0, 0.1))
+    area = mpatches.PathPatch(area, linewidth=1.5, edgecolor=(0, 0.5, 0), facecolor=(0, 0.5, 0, 0.5))
     axes[2].add_patch(area)
     axes[2].set_xlabel('Y')
     axes[2].set_ylabel('Z', labelpad=10)
@@ -354,34 +354,34 @@ if __name__ == "__main__":
     gen_cloud = GenereatePointCloudWithMetric()
     gen_cloud.create_ros_node()
 
-    # # wait for gazebo to be unpaued
-    # rospy.wait_for_service("/gazebo/get_physics_properties")
+    # wait for gazebo to be unpaued
+    rospy.wait_for_service("/gazebo/get_physics_properties")
 
-    # get_physics = rospy.ServiceProxy("/gazebo/get_physics_properties", GetPhysicsProperties)
+    get_physics = rospy.ServiceProxy("/gazebo/get_physics_properties", GetPhysicsProperties)
 
-    # rospy.loginfo("Waiting for Gazebo to be unpaused...")
+    rospy.loginfo("Waiting for Gazebo to be unpaused...")
 
-    # while not rospy.is_shutdown():
-    #     try:
-    #         physics = get_physics()
-    #         if physics.pause != True:  # Gazebo is unpaused if gravity is nonzero
-    #             rospy.loginfo("Gazebo unpaused! Proceeding...")
-    #             break
-    #     except rospy.ServiceException:
-    #         pass  # If service is not available, keep trying
+    while not rospy.is_shutdown():
+        try:
+            physics = get_physics()
+            if physics.pause != True:  # Gazebo is unpaused if gravity is nonzero
+                rospy.loginfo("Gazebo unpaused! Proceeding...")
+                break
+        except rospy.ServiceException:
+            pass  # If service is not available, keep trying
 
-    #     rospy.sleep(1)
+        rospy.sleep(1)
 
-    # gen_cloud.create_GUI()
+    gen_cloud.create_GUI()
 
     # generate the point cloud
-    gen_cloud.from_extern = True
-    gen_cloud.urdf_file_path = "/home/rosario/Desktop/base_pose_opt_ws/src/reach_space_modeling/src/reach_space_modeling/generate_pointcloud/model/mobile_wx250s.urdf"
-    gen_cloud.parse_urdf()
-    gen_cloud.wrist_lst_j_name = "wrist_rotate"
-    gen_cloud.arm_lst_j_name = "elbow"
-    gen_cloud.arm_frt_j_name = "waist"
-    gen_cloud.num_samples = 10
+    # gen_cloud.from_extern = True
+    # gen_cloud.urdf_file_path = "/home/rosario/Desktop/base_pose_opt_ws/src/reach_space_modeling/src/reach_space_modeling/generate_pointcloud/model/mobile_wx250s.urdf"
+    # gen_cloud.parse_urdf()
+    # gen_cloud.wrist_lst_j_name = "wrist_rotate"
+    # gen_cloud.arm_lst_j_name = "elbow"
+    # gen_cloud.arm_frt_j_name = "waist"
+    # gen_cloud.num_samples = 10
     gen_cloud.generate_point_cloud()
     rospy.loginfo("Reachability point cloud created...")
 
