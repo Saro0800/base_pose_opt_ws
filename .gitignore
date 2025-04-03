@@ -1,5 +1,4 @@
 build*
 devel*
 __pycache__*
-maps/*
-maps_tmp/*
+src/maps/*
