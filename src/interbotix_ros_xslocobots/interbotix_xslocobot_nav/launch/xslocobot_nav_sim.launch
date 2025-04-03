@@ -212,10 +212,11 @@
     ns="$(arg robot_name)/octomap_server"
     args="/home/rosario/Desktop/base_pose_opt_ws/src/maps/octomap_map.bt">
     <remap from="cloud_in"                      to="/$(arg robot_name)/camera/depth_registered/points"/>
-    <param name="base_frame_id"                 value="/$(arg robot_name)/base_footprint"/>
+    <param name="base_frame_id"                 value="map"/>
     <param name="sensor_model/max_range"        value="2"/> 
     <param name="filter_ground"                 value="true"/>
     <param name="resolution"                    value="0.025"/>
+    <param name="max_update_rate"               value="100"/>
     <param name="latch"                         value="true"/>
   </node>
 
