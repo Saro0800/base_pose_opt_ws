@@ -29,6 +29,7 @@ import matplotlib.patches as mpatches
 from matplotlib.patches import Ellipse
 import mpl_toolkits.mplot3d.art3d as art3d
 
+res = None
 
 def solve_eqn_prob(points, pnt_weights, alg_name, link=None, center=None, viz_res=False):
     # define the problem
@@ -73,11 +74,11 @@ def solve_eqn_prob(points, pnt_weights, alg_name, link=None, center=None, viz_re
 
     return res
 
-def create_ell_msg(points, link, res, center=None):
+def create_ell_msg(points, link, axes, center=None):
     # retrieve the solution of the opt problem
-    a = res.X[0]
-    b = res.X[1]
-    c = res.X[2]
+    a = axes[0]
+    b = axes[1]
+    c = axes[2]
 
     # compute the center
     if center is None:
@@ -149,15 +150,20 @@ def create_cloud_msg(points, link):
     return marker_msg
 
 def give_ell_params(req):
-    a = res.X[0]
-    b = res.X[1]
-    c = res.X[2]
-    xC = res.X[3]
-    yC = res.X[4]
-    zC = res.X[5]
+    aO = res.X[0]
+    bO = res.X[1]
+    cO = res.X[2]
+    
+    aI = res.X[3]
+    bI = res.X[4]
+    cI = res.X[5]
+    
+    xC = res.X[6]
+    yC = res.X[7]
+    zC = res.X[8]
     ell_ref_frame = link
 
-    return a, b, c, xC, yC, zC, ell_ref_frame
+    return aO, bO, cO, aI, bI, cI, xC, yC, zC, ell_ref_frame
 
 def vis_2d_opt_RS(points, reach_meas, center, out_p, inn_p):
     fig, axes = plt.subplots(1, 3, figsize=(10,4), constrained_layout=True)
@@ -382,7 +388,7 @@ if __name__ == "__main__":
     # gen_cloud.arm_lst_j_name = "elbow"
     # gen_cloud.arm_frt_j_name = "waist"
     # gen_cloud.num_samples = 10
-    gen_cloud.generate_point_cloud()
+    # gen_cloud.generate_point_cloud()
     rospy.loginfo("Reachability point cloud created...")
 
     # compute the reachability index for each point
@@ -432,42 +438,48 @@ if __name__ == "__main__":
     vis_2d_opt_RS(points, gen_cloud.points_reach_measure, center, out_p, inn_p)
     vis_3d_opt_RS(points, gen_cloud.points_reach_measure, center, out_p, inn_p)
     
-    # end = time.time() - start
-    # print("Solution found in {:.4f}s".format(end))
+    end = time.time() - start
+    print("Solution found in {:.4f}s".format(end))
 
-    # center = np.array([res.X[3], res.X[4], res.X[5]])
+    # create the point cloud message
+    cloud_msg = create_cloud_msg(gen_cloud.points, gen_cloud.point_cloud_orig_frame)
+    
+    # create the center of the point cloud message
+    center_msg = create_cloud_msg([center], gen_cloud.point_cloud_orig_frame)
+    
+    # create the outer ellipsoid message
+    ell_out_msg = create_ell_msg(None, gen_cloud.point_cloud_orig_frame, res.X[:3], center)
+    
+    # create the inner ellipsoid message
+    ell_inn_msg = create_ell_msg(None, gen_cloud.point_cloud_orig_frame, res.X[3:6], center)
 
-    # # create the marker msg
-    # marker_msg = create_ell_msg(points, link, res, center)
+    # provide a service to  get the parameters of the ellipsoid
+    ell_params_srv = rospy.Service("get_ellipsoid_params", ell_params, give_ell_params)
 
-    # # create the center message
-    # center = np.expand_dims(center, axis=0)
-    # center_msg = create_cloud_msg(center, link)
+    pub_rate = rospy.Rate(0.5)  # 1 Hz
 
-    # # create the cloud message
-    # cloud_msg = create_cloud_msg(points, link)
+    print("Start publishing message")
+    for i in range(10):
+        # publish the point cloud
+        cloud_msg.header.stamp = rospy.Time.now()
+        gen_cloud.pub_cloud.publish(cloud_msg)
+        pub_rate.sleep()
+                
+        # publish the center of the point cloud
+        center_msg.header.stamp = rospy.Time.now()
+        gen_cloud.pub_center.publish(center_msg)
+        pub_rate.sleep()
+        
+        # publish the outer ellipsoid
+        ell_out_msg.header.stamp = rospy.Time.now()
+        gen_cloud.pub_ellipsoid_out.publish(ell_out_msg)
+        pub_rate.sleep()
+        
+        # publish the inner ellipsoid
+        ell_inn_msg.header.stamp = rospy.Time.now()
+        gen_cloud.pub_ellipsoid_inn.publish(ell_inn_msg)
+        pub_rate.sleep()
+        
+        
 
-    # # rospy.init_node('reachability_ellipsoid_publisher', anonymous=True)
-    # pub_ellipsoids = rospy.Publisher('/viz_reachability_ellipsoid', Marker, queue_size=10)
-    # pub_center = rospy.Publisher('/viz_ellipsoid_center', Marker, queue_size=10)
-    # pub_cloud = rospy.Publisher('/viz_pointcloud', Marker, queue_size=10)
-    # rate = rospy.Rate(1)  # 1 Hz
-
-    # # provide a service to  get the parameters of the ellipsoid
-    # ell_params_srv = rospy.Service("get_ellipsoid_params", ell_params, give_ell_params)
-
-    # print("Start publishing message")
-    # for i in range(10):
-    #     pub_ellipsoids.publish(marker_msg)
-    #     marker_msg.header.stamp = rospy.Time.now()
-    #     rate.sleep()
-
-    #     center_msg.header.stamp = rospy.Time.now()
-    #     pub_center.publish(center_msg)
-    #     rate.sleep()
-
-    #     cloud_msg.header.stamp = rospy.Time.now()
-    #     pub_cloud.publish(cloud_msg)
-    #     rate.sleep()
-
-    # rospy.spin()
+    rospy.spin()

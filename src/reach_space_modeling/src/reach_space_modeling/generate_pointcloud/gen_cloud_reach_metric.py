@@ -10,6 +10,8 @@ import tkinter as tk
 import numpy as np
 import time
 from scipy.spatial.transform import Rotation
+from sensor_msgs.msg import PointCloud2, PointField
+from visualization_msgs.msg import Marker
 from std_msgs.msg import Header
 import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D
@@ -24,6 +26,14 @@ import pybullet
 class GenereatePointCloudWithMetric(GenereatePointCloud):
     def __init__(self) -> None:
         super().__init__()
+    
+    def create_ros_node(self):
+        rospy.init_node('reachability_pointcloud_publisher', anonymous=True)
+        self.pub_ellipsoid_inn = rospy.Publisher('/viz_reachability_ellipsoid_inn', Marker, queue_size=10)
+        self.pub_ellipsoid_out = rospy.Publisher('/viz_reachability_ellipsoid_out', Marker, queue_size=10)
+        self.pub_center = rospy.Publisher('/viz_ellipsoid_center', Marker, queue_size=10)
+        self.pub_cloud = rospy.Publisher('/viz_pointcloud', Marker, queue_size=10)
+        self.pub_rate = rospy.Rate(1)  # 1 Hz
 
     def generate_reachability_index(self):
         # define the parameter of the sphere

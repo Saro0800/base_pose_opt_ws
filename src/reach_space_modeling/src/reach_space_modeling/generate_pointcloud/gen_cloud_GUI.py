@@ -17,6 +17,8 @@ class GenereatePointCloud:
 
     def create_ros_node(self):
         rospy.init_node('reachability_pointcloud_publisher', anonymous=True)
+        self.pub_points = rospy.Publisher('/reachability_pointcloud', PointCloud2, queue_size=10)
+        self.pub_rate = rospy.Rate(1)  # 1 Hz
 
     def parse_urdf(self):
         # load the urdf file

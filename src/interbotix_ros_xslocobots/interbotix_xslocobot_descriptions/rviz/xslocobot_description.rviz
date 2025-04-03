@@ -244,17 +244,7 @@ Visualization Manager:
           Value: true
         locobot/battery_link:
           Value: true
-        locobot/camera_aligned_depth_to_color_frame:
-          Value: true
-        locobot/camera_color_frame:
-          Value: true
-        locobot/camera_color_optical_frame:
-          Value: true
-        locobot/camera_depth_frame:
-          Value: true
         locobot/camera_depth_link:
-          Value: true
-        locobot/camera_depth_optical_frame:
           Value: true
         locobot/camera_link:
           Value: true
@@ -334,14 +324,6 @@ Visualization Manager:
                   locobot/pan_link:
                     locobot/tilt_link:
                       locobot/camera_link:
-                        locobot/camera_aligned_depth_to_color_frame:
-                          locobot/camera_color_optical_frame:
-                            {}
-                        locobot/camera_color_frame:
-                          {}
-                        locobot/camera_depth_frame:
-                          locobot/camera_depth_optical_frame:
-                            {}
                         locobot/camera_depth_link:
                           {}
                 locobot/caster_back_link:
@@ -742,17 +724,25 @@ Visualization Manager:
     - Class: rviz/Group
       Displays:
         - Class: rviz/Marker
-          Enabled: false
+          Enabled: true
           Marker Topic: /viz_pointcloud
           Name: Point cloud
           Namespaces:
             {}
           Queue Size: 100
-          Value: false
+          Value: true
         - Class: rviz/Marker
           Enabled: true
-          Marker Topic: /viz_reachability_ellipsoid
-          Name: Ellipsoid
+          Marker Topic: /viz_reachability_ellipsoid_out
+          Name: Ellipsoid_out
+          Namespaces:
+            {}
+          Queue Size: 100
+          Value: true
+        - Class: rviz/Marker
+          Enabled: true
+          Marker Topic: /viz_reachability_ellipsoid_inn
+          Name: Ellipsoid_inn
           Namespaces:
             {}
           Queue Size: 100

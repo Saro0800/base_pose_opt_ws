@@ -1,7 +1,10 @@
 ---
-float32 a
-float32 b
-float32 c
+float32 aO
+float32 bO
+float32 c0
+float32 aI
+float32 bI
+float32 cI
 float32 xC
 float32 yC
 float32 zC
