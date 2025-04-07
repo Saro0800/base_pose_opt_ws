@@ -714,13 +714,13 @@ Visualization Manager:
       Enabled: false
       Name: Perception
     - Class: rviz/MarkerArray
-      Enabled: true
+      Enabled: false
       Marker Topic: /locobot/octomap_server/occupied_cells_vis_array
       Name: OctoMap server
       Namespaces:
-        map: true
+        {}
       Queue Size: 100
-      Value: true
+      Value: false
     - Class: rviz/Group
       Displays:
         - Class: rviz/Marker

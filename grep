@@ -1,0 +1,6 @@
+Usage: roslaunch [options] [package] <filename> [arg_name:=value...]
+       roslaunch [options] <filename> [<filename>...] [arg_name:=value...]
+
+If <filename> is a single dash ('-'), launch XML is read from standard input.
+
+roslaunch: error: The following input files do not exist: WARN

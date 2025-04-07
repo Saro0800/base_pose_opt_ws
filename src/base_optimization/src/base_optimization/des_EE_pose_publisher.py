@@ -14,7 +14,7 @@ des_EE_pose.header.frame_id = "map"
 des_EE_pose.header.stamp = rospy.Time.now()
 
 des_EE_pose.pose.position.x = -3.5
-des_EE_pose.pose.position.y = 2.25
+des_EE_pose.pose.position.y = 2.75
 des_EE_pose.pose.position.z = 0.4
 
 des_orientation = tf.transformations.quaternion_from_euler(0, 0, np.deg2rad(180), axes='sxyz')

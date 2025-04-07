@@ -9,12 +9,13 @@ class BasePoseOptProblem(ElementwiseProblem):
     def __init__(self, *args):
         # retrieve the passed arguments
         self.ell_center = args[0]
-        self.ell_axis = args[1]
-        self.des_pose = args[2]
-        self.point_cloud = args[3]
+        self.ell_axis_out = args[1]
+        self.ell_axis_inn = args[2]
+        self.des_pose = args[3]
+        self.point_cloud = args[4]
 
-        a = self.ell_axis[0]
-        b = self.ell_axis[1]
+        aO = self.ell_axis_out[0]
+        bO = self.ell_axis_out[1]
         
         x_des_EE = self.des_pose[0]
         y_des_EE = self.des_pose[1]
@@ -40,15 +41,20 @@ class BasePoseOptProblem(ElementwiseProblem):
         # define the parameters of the optimization problem
         super().__init__(n_var=3,
                          n_obj=1,
-                         n_ieq_constr=1,
-                         xl=np.array([x_des_EE - max(a,b), y_des_EE - max(a,b), 0]),
-                         xu=np.array([x_des_EE + max(a,b), y_des_EE + max(a,b), 360]))
+                         n_ieq_constr=2,
+                         xl=np.array([x_des_EE - max(aO,bO), y_des_EE - max(aO,bO), 0]),
+                         xu=np.array([x_des_EE + max(aO,bO), y_des_EE + max(aO,bO), 360]))
 
     def _evaluate(self, x, out, *args, **kwargs):
         # retrieve the ellipsoid equation equation paramters
-        a = self.ell_axis[0]
-        b = self.ell_axis[1]
-        c = self.ell_axis[2]
+        aO = self.ell_axis_out[0]
+        bO = self.ell_axis_out[1]
+        cO = self.ell_axis_out[2]
+        
+        aI = self.ell_axis_inn[0]
+        bI = self.ell_axis_inn[1]
+        cI = self.ell_axis_inn[2]
+        
         xc = self.ell_center[0]
         yc = self.ell_center[1]
         zc = self.ell_center[2]
@@ -102,10 +108,11 @@ class BasePoseOptProblem(ElementwiseProblem):
         theta_versor = np.rad2deg(np.arccos(cos_theta_versor))
         
         # count how many points are inside the ellipsoid        
-        inner_points = self.point_cloud[((x[0]-self.xcloud)/a)**2 + ((x[1]-self.ycloud)/b)**2 + ((zc-self.zcloud)/c)**2<=1]
+        inner_points = self.point_cloud[((x[0]-self.xcloud)/aO)**2 + ((x[1]-self.ycloud)/bO)**2 + ((zc-self.zcloud)/cO)**2<=1]
         
         # define the constraints
-        constrs = [((x[0]-xp)/a)**2 + ((x[1]-yp)/b)**2 + ((zc-zp)/c)**2 - 1]
+        constrs = [((x[0]-xp)/aO)**2 + ((x[1]-yp)/bO)**2 + ((zc-zp)/cO)**2 - 1,
+                   -((x[0]-xp)/aI)**2 - ((x[1]-yp)/bI)**2 - ((zc-zp)/cI)**2 + 1]
         out["G"] = np.row_stack(constrs)
         
         # define the objective function       

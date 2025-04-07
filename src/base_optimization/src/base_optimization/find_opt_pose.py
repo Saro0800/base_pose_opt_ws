@@ -26,7 +26,6 @@ from base_optimization.srv import octomap2cloud, octomap2cloudResponse
 from gazebo_msgs.srv import GetPhysicsProperties
 
 
-
 def send_opt_base_pose(x_base, y_base, theta_base):
     # received base_pose is a PoseStmaped msg
 
@@ -54,7 +53,7 @@ def send_opt_base_pose(x_base, y_base, theta_base):
 def find_opt_base_pose(ell_frame_link, des_pose, point_cloud):
     rospy.loginfo("Looking for an optimal base pose...")
     # define the optimization problem to find the optimal base pose
-    problem = BasePoseOptProblem(ell_center_map, ell_axis, des_pose, point_cloud)
+    problem = BasePoseOptProblem(ell_center_map, ell_axis_out, ell_axis_inn, des_pose, point_cloud)
 
     # solve the optimization problem using the PSO algorithm
     algorithm = PSO()
@@ -70,29 +69,30 @@ def find_opt_base_pose(ell_frame_link, des_pose, point_cloud):
                    seed=1)
 
     rospy.loginfo("Optimal base pose: x=%.4f, y=%.4f, theta=%.4f",
-                  res.X[0], res.X[1], res.X[2])    
+                  res.X[0], res.X[1], res.X[2])
     print(res.F)
-    
+
     # io qui ottengo la posizione dell'ellissoide rispetto a R0
     # devo trovare le coordinate della base che mi permettono di arrivare
     # ad avere il centro dell'ellissoide nel punto desiderato
-    
+
     tmp = PoseStamped()
     tmp.header.frame_id = "map"
     tmp.header.stamp = rospy.Time.now()
-    
+
     tmp.pose.position.x = res.X[0]
     tmp.pose.position.y = res.X[1]
     tmp.pose.position.z = ell_center_map[2]
-    
-    quat = tf.transformations.quaternion_from_euler(0, 0, np.deg2rad(res.X[2]), axes='sxyz')
+
+    quat = tf.transformations.quaternion_from_euler(
+        0, 0, np.deg2rad(res.X[2]), axes='sxyz')
     tmp.pose.orientation.x = quat[0]
     tmp.pose.orientation.y = quat[1]
     tmp.pose.orientation.z = quat[2]
     tmp.pose.orientation.w = quat[3]
-    
+
     tmp_pub.publish(tmp)
-    
+
     send_opt_base_pose(res.X[0], res.X[1], res.X[2])
 
 
@@ -108,93 +108,99 @@ def handle_des_EE_pose(data):
     des_pose = np.concatenate((des_position, des_orientation))
 
     tmp_pub.publish(data)
-    
+
     # request the conversion from octomap to point cloud
-    rospy.loginfo("Waiting for service '/locobot/octomap2cloud_converter_srv' ...")
+    rospy.loginfo(
+        "Waiting for service '/locobot/octomap2cloud_converter_srv' ...")
     rospy.wait_for_service("/locobot/octomap2cloud_converter_srv")
-    octomap2cloud_srv = rospy.ServiceProxy("/locobot/octomap2cloud_converter_srv", octomap2cloud)
-    
-    rospy.loginfo("Sending a service request to '/locobot/octomap2cloud_converter_srv'...")
+    octomap2cloud_srv = rospy.ServiceProxy(
+        "/locobot/octomap2cloud_converter_srv", octomap2cloud)
+
+    rospy.loginfo(
+        "Sending a service request to '/locobot/octomap2cloud_converter_srv'...")
     occ_cloud = octomap2cloud_srv()
     rospy.loginfo("Response received")
 
     # convert the PointCloud2 message into a umpy array
     cloud_np = ros_numpy.numpify(occ_cloud.cloud)
-      
+
     # find the optimal base pose
     find_opt_base_pose(ell_ref_frame, des_pose, cloud_np)
 
-if __name__=="__main__":
-    # create a ROS node
-    rospy.init_node('find_opt_pose', anonymous=True)
-    
-    # wait for gazebo to be unpaued
-    rospy.wait_for_service("/gazebo/get_physics_properties")
 
-    get_physics = rospy.ServiceProxy("/gazebo/get_physics_properties", GetPhysicsProperties)
+# create a ROS node
+rospy.init_node('find_opt_pose', anonymous=True)
 
-    rospy.loginfo("Waiting for Gazebo to be unpaused...")
+# wait for gazebo to be unpaued
+rospy.wait_for_service("/gazebo/get_physics_properties")
 
-    while not rospy.is_shutdown():
-        try:
-            physics = get_physics()
-            if physics.pause != True:  # Gazebo is unpaused if gravity is nonzero
-                rospy.loginfo("Gazebo unpaused! Proceeding...")
-                break
-        except rospy.ServiceException:
-            pass  # If service is not available, keep trying
+get_physics = rospy.ServiceProxy("/gazebo/get_physics_properties", GetPhysicsProperties)
+rospy.loginfo("Waiting for Gazebo to be unpaused...")
 
-        rospy.sleep(1)
+while not rospy.is_shutdown():
+    try:
+        physics = get_physics()
+        if physics.pause != True:  # Gazebo is unpaused if gravity is nonzero
+            rospy.loginfo("Gazebo unpaused! Proceeding...")
+            break
+    except rospy.ServiceException:
+        pass  # If service is not available, keep trying
 
-    # retrieve the parameter of the ellipsoid
-    rospy.loginfo("Waiting for serive /get_ellipsoid_params...")
-    rospy.wait_for_service('get_ellipsoid_params')
-    ell_params_srv = rospy.ServiceProxy('get_ellipsoid_params', ell_params)
-    rospy.loginfo("Service /get_ellipsoid_params is available")
+    rospy.sleep(1)
 
-    rospy.loginfo("Sending request to /get_ellipsoid_params...")
-    ell_par = ell_params_srv()
-    rospy.loginfo("Ellipsoid parameters received: %.4f, %.4f, %.4f, %.4f, %.4f, %.4f",
-                ell_par.xC, ell_par.yC, ell_par.zC, ell_par.a, ell_par.b, ell_par.c)
-    rospy.loginfo("Ellipsoid reference frame: %s", ell_par.ell_ref_frame)
+# retrieve the parameter of the ellipsoid
+rospy.loginfo("Waiting for serive /get_ellipsoid_params...")
+rospy.wait_for_service('get_ellipsoid_params')
+ell_params_srv = rospy.ServiceProxy('get_ellipsoid_params', ell_params)
+rospy.loginfo("Service /get_ellipsoid_params is available")
 
-    ell_center = np.array([ell_par.xC, ell_par.yC, ell_par.zC])
-    ell_axis = np.array([ell_par.a, ell_par.b, ell_par.c])
-    ell_ref_frame = ell_par.ell_ref_frame
+rospy.loginfo("Sending request to /get_ellipsoid_params...")
+ell_par = ell_params_srv()
+rospy.loginfo("Ellipsoid parameters received: %.4f, %.4f, %.4f, %.4f, %.4f, %.4f, %.4f, %.4f, %.4f",
+              ell_par.xC, ell_par.yC, ell_par.zC,
+              ell_par.aO, ell_par.bO, ell_par.cO,
+              ell_par.aI, ell_par.bI, ell_par.cI)
+rospy.loginfo("Ellipsoid reference frame: %s", ell_par.ell_ref_frame)
 
-    # transform the center from ell_ref_fram to the fixed frame ("map")
-    tmp_pose = PoseStamped()
-    tmp_pose.header.stamp = rospy.Time.now()
-    tmp_pose.header.frame_id = ell_ref_frame
+ell_center = np.array([ell_par.xC, ell_par.yC, ell_par.zC])
+ell_axis_out = np.array([ell_par.aO, ell_par.bO, ell_par.cO])
+ell_axis_inn = np.array([ell_par.aI, ell_par.bI, ell_par.cI])
+ell_ref_frame = ell_par.ell_ref_frame
 
-    tmp_pose.pose.position.x = ell_center[0]
-    tmp_pose.pose.position.y = ell_center[1]
-    tmp_pose.pose.position.z = ell_center[2]
+# transform the center from ell_ref_fram to the fixed frame ("map")
+tmp_pose = PoseStamped()
+tmp_pose.header.stamp = rospy.Time.now()
+tmp_pose.header.frame_id = ell_ref_frame
 
-    tmp_pose.pose.orientation.x = 0.0
-    tmp_pose.pose.orientation.y = 0.0
-    tmp_pose.pose.orientation.z = 0.0
-    tmp_pose.pose.orientation.w = 1.0
+tmp_pose.pose.position.x = ell_center[0]
+tmp_pose.pose.position.y = ell_center[1]
+tmp_pose.pose.position.z = ell_center[2]
 
-    tf_buffer = tf2_ros.Buffer()
-    tf_listener = tf2_ros.TransformListener(tf_buffer)
+tmp_pose.pose.orientation.x = 0.0
+tmp_pose.pose.orientation.y = 0.0
+tmp_pose.pose.orientation.z = 0.0
+tmp_pose.pose.orientation.w = 1.0
 
-    tf_buffer.can_transform("map", ell_ref_frame, rospy.Time(0))
-    transform = tf_buffer.lookup_transform("map", ell_ref_frame, rospy.Time(0), rospy.Duration(1))
-    ell_transformed_msg = tf2_geometry_msgs.do_transform_pose(tmp_pose, transform)
+tf_buffer = tf2_ros.Buffer()
+tf_listener = tf2_ros.TransformListener(tf_buffer)
 
-    ell_center_map = np.array([ell_transformed_msg.pose.position.x,
-                            ell_transformed_msg.pose.position.y,
-                            ell_transformed_msg.pose.position.z])
+tf_buffer.can_transform("map", ell_ref_frame, rospy.Time(0))
+transform = tf_buffer.lookup_transform("map", ell_ref_frame, rospy.Time(0), rospy.Duration(1))
+ell_transformed_msg = tf2_geometry_msgs.do_transform_pose(tmp_pose, transform)
 
-    rospy.Subscriber("/des_EE_pose", PoseStamped, callback=handle_des_EE_pose)
-    tmp_pub = rospy.Publisher("/des_EE_pose_tmp", PoseStamped, queue_size=10)
+ell_center_map = np.array([ell_transformed_msg.pose.position.x,
+                           ell_transformed_msg.pose.position.y,
+                           ell_transformed_msg.pose.position.z])
 
-    rospy.sleep(0.5)
+rospy.Subscriber("/des_EE_pose", PoseStamped, callback=handle_des_EE_pose)
+tmp_pub = rospy.Publisher("/des_EE_pose_tmp", PoseStamped, queue_size=10)
 
-    # publish on topic to move the base
-    move_base_pub = rospy.Publisher("/locobot/move_base/goal", MoveBaseActionGoal, queue_size=10)
+rospy.sleep(0.5)
 
-    print()
-    rospy.loginfo("Waiting for the desired end-effector pose...")
-    rospy.spin()
+# publish on topic to move the base
+move_base_pub = rospy.Publisher(
+    "/locobot/move_base/goal", MoveBaseActionGoal, queue_size=10)
+
+print()
+rospy.loginfo("Waiting for the desired end-effector pose...")
+rospy.spin()
