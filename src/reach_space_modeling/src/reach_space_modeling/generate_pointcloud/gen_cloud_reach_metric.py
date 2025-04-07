@@ -33,7 +33,6 @@ class GenereatePointCloudWithMetric(GenereatePointCloud):
         self.pub_ellipsoid_out = rospy.Publisher('/viz_reachability_ellipsoid_out', Marker, queue_size=10)
         self.pub_center = rospy.Publisher('/viz_ellipsoid_center', Marker, queue_size=10)
         self.pub_cloud = rospy.Publisher('/viz_pointcloud', Marker, queue_size=10)
-        self.pub_rate = rospy.Rate(1)  # 1 Hz
 
     def generate_reachability_index(self):
         # define the parameter of the sphere

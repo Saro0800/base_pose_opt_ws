@@ -231,14 +231,14 @@
   </node>
 
   <!-- node to find the ellipsoid equation -->
-  <!-- <node
+  <node
     pkg="reach_space_modeling"
     type="find_ellips_eq_reach_opt2.py"
     respawn="false"
     name="find_ell_equation_node"
     output="screen"
     ns="$(arg robot_name)">
-  </node> -->
+  </node>
 
   <!-- node to find optimal base poses -->
   <node
@@ -260,8 +260,12 @@
     ns="$(arg robot_name)">
   </node>
 
+  <arg name="filename"          default="'/home/rosario/Desktop/base_pose_opt_ws/src/maps/octomap_map.bt'" />
+  <arg name="load_map_args"     default='"filename: $(arg filename)"'/>
+
+  <!-- start the moveit package -->
   <include file="$(find interbotix_xslocobot_moveit)/launch/move_group.launch">
   </include>
-
+  <node pkg="rosservice" type="rosservice" name="load_octomap" args="call --wait /$(arg robot_name)/move_group/load_map $(arg load_map_args)" />
 
 </launch>
