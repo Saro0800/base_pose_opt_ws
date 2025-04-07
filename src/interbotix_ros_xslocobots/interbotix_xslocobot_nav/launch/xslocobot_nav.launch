@@ -247,21 +247,22 @@
     <remap from="/move_base_simple/goal" to="move_base_simple/goal"/>
   </node> 
 
-   <!-- octomap_server node -->
+  <!-- octomap_server node -->
   <node
     pkg="octomap_server"
     type="octomap_server_node"
     respawn="false"
     name="octomap_server_node"
     output="screen"
-    ns="$(arg robot_name)/octomap_server"
-    args="/home/rosario/Desktop/base_pose_opt_ws/src/maps/octomap_map_real.bt">
+    ns="$(arg robot_name)/octomap_server">
+    <!-- args="/home/rosario/Desktop/base_pose_opt_ws/src/maps/octomap_map_real.bt"> -->
     <remap from="cloud_in"                      to="/$(arg robot_name)/camera/depth_registered/points"/>
-    <param name="base_frame_id"                 value="/$(arg robot_name)/base_footprint"/>
+    <param name="base_frame_id"                 value="map"/>
     <param name="sensor_model/max_range"        value="2"/> 
     <param name="filter_ground"                 value="true"/>
-    <param name="resolution"                    value="0.02"/>
-    <param name="latch"                         value="true"/>
+    <param name="resolution"                    value="0.025"/>
+    <param name="max_update_rate"               value="100"/>
+    <!-- <param name="latch"                         value="true"/> -->
   </node>
 
   <!-- custom octomap to point cloud converter node -->
@@ -277,7 +278,7 @@
   <!-- node to find the ellipsoid equation -->
   <node
     pkg="reach_space_modeling"
-    type="find_ellips_eq_all.py"
+    type="find_ellips_eq_reach_opt2.py"
     respawn="false"
     name="find_ell_equation_node"
     output="screen"
@@ -287,21 +288,18 @@
   <!-- node to find optimal base poses -->
   <node
     pkg="base_optimization"
-    type="find_opt_pose_multi.py"
+    type="find_opt_pose.py"
     respawn="false"
-    name="find_opt_pose_multi"
+    name="find_opt_pose"
     output="screen"
     ns="$(arg robot_name)">
   </node>
 
-  <!-- node to move towards all the opt base poses -->
-  <node
-    pkg="base_optimization"
-    type="move_to_next_pose.py"
-    respawn="false"
-    name="move_to_next_pose"
-    output="screen"
-    ns="$(arg robot_name)">
-  </node>
+  <arg name="filename"          default="'/home/rosario/Desktop/base_pose_opt_ws/src/maps/octomap_map.bt'" />
+  <arg name="load_map_args"     default='"filename: $(arg filename)"'/>
 
+  <!-- start the moveit package -->
+  <include file="$(find interbotix_xslocobot_moveit)/launch/move_group.launch">
+  </include>
+  <node pkg="rosservice" type="rosservice" name="load_octomap" args="call --wait /$(arg robot_name)/move_group/load_map $(arg load_map_args)" />
 </launch>
