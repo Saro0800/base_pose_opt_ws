@@ -250,16 +250,6 @@
     ns="$(arg robot_name)">
   </node>
 
-  <!-- node to move towards all the opt base poses -->
-  <node
-    pkg="base_optimization"
-    type="move_to_next_pose.py"
-    respawn="false"
-    name="move_to_next_pose"
-    output="screen"
-    ns="$(arg robot_name)">
-  </node>
-
   <arg name="filename"          default="'/home/rosario/Desktop/base_pose_opt_ws/src/maps/octomap_map.bt'" />
   <arg name="load_map_args"     default='"filename: $(arg filename)"'/>
 

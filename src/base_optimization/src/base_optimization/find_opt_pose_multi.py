@@ -196,8 +196,7 @@ ell_center_base = np.array([ell_transformed_msg.pose.position.x,
                             ell_transformed_msg.pose.position.z])
 
 
-rospy.Subscriber("/des_EE_pose_multi", Marker,
-                 callback=handle_des_EE_pose_multi)
+rospy.Subscriber("/des_EE_pose_multi", Marker, callback=handle_des_EE_pose_multi)
 tmp_pub = rospy.Publisher("/des_EE_pose_tmp", PoseStamped, queue_size=10)
 
 rospy.sleep(0.5)
