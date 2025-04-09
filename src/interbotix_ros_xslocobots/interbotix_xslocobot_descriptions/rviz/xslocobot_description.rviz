@@ -5,8 +5,8 @@ Panels:
     Property Tree Widget:
       Expanded:
         - /Reachability model1
-      Splitter Ratio: 0.4444444477558136
-    Tree Height: 753
+      Splitter Ratio: 0.5878260731697083
+    Tree Height: 987
   - Class: rviz/Selection
     Name: Selection
   - Class: rviz/Tool Properties
@@ -244,7 +244,17 @@ Visualization Manager:
           Value: true
         locobot/battery_link:
           Value: true
+        locobot/camera_aligned_depth_to_color_frame:
+          Value: true
+        locobot/camera_color_frame:
+          Value: true
+        locobot/camera_color_optical_frame:
+          Value: true
+        locobot/camera_depth_frame:
+          Value: true
         locobot/camera_depth_link:
+          Value: true
+        locobot/camera_depth_optical_frame:
           Value: true
         locobot/camera_link:
           Value: true
@@ -324,6 +334,14 @@ Visualization Manager:
                   locobot/pan_link:
                     locobot/tilt_link:
                       locobot/camera_link:
+                        locobot/camera_aligned_depth_to_color_frame:
+                          locobot/camera_color_optical_frame:
+                            {}
+                        locobot/camera_color_frame:
+                          {}
+                        locobot/camera_depth_frame:
+                          locobot/camera_depth_optical_frame:
+                            {}
                         locobot/camera_depth_link:
                           {}
                 locobot/caster_back_link:
@@ -783,7 +801,7 @@ Visualization Manager:
       Value: true
     - Acceleration_Scaling_Factor: 0.9
       Class: moveit_rviz_plugin/MotionPlanning
-      Enabled: true
+      Enabled: false
       JointsTab_Use_Radians: true
       Move Group Namespace: ""
       MoveIt_Allow_Approximate_IK: false
@@ -813,167 +831,6 @@ Visualization Manager:
           Expand Link Details: false
           Expand Tree: false
           Link Tree Style: Links in Alphabetic Order
-          locobot/ar_tag_link:
-            Alpha: 1
-            Show Axes: false
-            Show Trail: false
-            Value: true
-          locobot/arm_base_link:
-            Alpha: 1
-            Show Axes: false
-            Show Trail: false
-            Value: true
-          locobot/base_footprint:
-            Alpha: 1
-            Show Axes: false
-            Show Trail: false
-          locobot/base_link:
-            Alpha: 1
-            Show Axes: false
-            Show Trail: false
-            Value: true
-          locobot/battery_link:
-            Alpha: 1
-            Show Axes: false
-            Show Trail: false
-            Value: true
-          locobot/camera_depth_link:
-            Alpha: 1
-            Show Axes: false
-            Show Trail: false
-          locobot/camera_link:
-            Alpha: 1
-            Show Axes: false
-            Show Trail: false
-            Value: true
-          locobot/camera_tower_link:
-            Alpha: 1
-            Show Axes: false
-            Show Trail: false
-            Value: true
-          locobot/caster_back_link:
-            Alpha: 1
-            Show Axes: false
-            Show Trail: false
-            Value: true
-          locobot/caster_front_link:
-            Alpha: 1
-            Show Axes: false
-            Show Trail: false
-            Value: true
-          locobot/cliff_sensor_front_link:
-            Alpha: 1
-            Show Axes: false
-            Show Trail: false
-          locobot/cliff_sensor_left_link:
-            Alpha: 1
-            Show Axes: false
-            Show Trail: false
-          locobot/cliff_sensor_right_link:
-            Alpha: 1
-            Show Axes: false
-            Show Trail: false
-          locobot/ee_arm_link:
-            Alpha: 1
-            Show Axes: false
-            Show Trail: false
-          locobot/ee_gripper_link:
-            Alpha: 1
-            Show Axes: false
-            Show Trail: false
-          locobot/fingers_link:
-            Alpha: 1
-            Show Axes: false
-            Show Trail: false
-          locobot/gripper_bar_link:
-            Alpha: 1
-            Show Axes: false
-            Show Trail: false
-            Value: true
-          locobot/gripper_link:
-            Alpha: 1
-            Show Axes: false
-            Show Trail: false
-            Value: true
-          locobot/gripper_prop_link:
-            Alpha: 1
-            Show Axes: false
-            Show Trail: false
-            Value: true
-          locobot/gyro_link:
-            Alpha: 1
-            Show Axes: false
-            Show Trail: false
-          locobot/laser_frame_link:
-            Alpha: 1
-            Show Axes: false
-            Show Trail: false
-            Value: true
-          locobot/left_finger_link:
-            Alpha: 1
-            Show Axes: false
-            Show Trail: false
-            Value: true
-          locobot/lidar_tower_link:
-            Alpha: 1
-            Show Axes: false
-            Show Trail: false
-            Value: true
-          locobot/lower_forearm_link:
-            Alpha: 1
-            Show Axes: false
-            Show Trail: false
-            Value: true
-          locobot/pan_link:
-            Alpha: 1
-            Show Axes: false
-            Show Trail: false
-            Value: true
-          locobot/plate_link:
-            Alpha: 1
-            Show Axes: false
-            Show Trail: false
-            Value: true
-          locobot/right_finger_link:
-            Alpha: 1
-            Show Axes: false
-            Show Trail: false
-            Value: true
-          locobot/shoulder_link:
-            Alpha: 1
-            Show Axes: false
-            Show Trail: false
-            Value: true
-          locobot/tilt_link:
-            Alpha: 1
-            Show Axes: false
-            Show Trail: false
-            Value: true
-          locobot/upper_arm_link:
-            Alpha: 1
-            Show Axes: false
-            Show Trail: false
-            Value: true
-          locobot/upper_forearm_link:
-            Alpha: 1
-            Show Axes: false
-            Show Trail: false
-            Value: true
-          locobot/wheel_left_link:
-            Alpha: 1
-            Show Axes: false
-            Show Trail: false
-            Value: true
-          locobot/wheel_right_link:
-            Alpha: 1
-            Show Axes: false
-            Show Trail: false
-            Value: true
-          locobot/wrist_link:
-            Alpha: 1
-            Show Axes: false
-            Show Trail: false
-            Value: true
         Loop Animation: false
         Robot Alpha: 0.5
         Robot Color: 150; 50; 150
@@ -1020,171 +877,10 @@ Visualization Manager:
           Expand Link Details: false
           Expand Tree: false
           Link Tree Style: Links in Alphabetic Order
-          locobot/ar_tag_link:
-            Alpha: 1
-            Show Axes: false
-            Show Trail: false
-            Value: true
-          locobot/arm_base_link:
-            Alpha: 1
-            Show Axes: false
-            Show Trail: false
-            Value: true
-          locobot/base_footprint:
-            Alpha: 1
-            Show Axes: false
-            Show Trail: false
-          locobot/base_link:
-            Alpha: 1
-            Show Axes: false
-            Show Trail: false
-            Value: true
-          locobot/battery_link:
-            Alpha: 1
-            Show Axes: false
-            Show Trail: false
-            Value: true
-          locobot/camera_depth_link:
-            Alpha: 1
-            Show Axes: false
-            Show Trail: false
-          locobot/camera_link:
-            Alpha: 1
-            Show Axes: false
-            Show Trail: false
-            Value: true
-          locobot/camera_tower_link:
-            Alpha: 1
-            Show Axes: false
-            Show Trail: false
-            Value: true
-          locobot/caster_back_link:
-            Alpha: 1
-            Show Axes: false
-            Show Trail: false
-            Value: true
-          locobot/caster_front_link:
-            Alpha: 1
-            Show Axes: false
-            Show Trail: false
-            Value: true
-          locobot/cliff_sensor_front_link:
-            Alpha: 1
-            Show Axes: false
-            Show Trail: false
-          locobot/cliff_sensor_left_link:
-            Alpha: 1
-            Show Axes: false
-            Show Trail: false
-          locobot/cliff_sensor_right_link:
-            Alpha: 1
-            Show Axes: false
-            Show Trail: false
-          locobot/ee_arm_link:
-            Alpha: 1
-            Show Axes: false
-            Show Trail: false
-          locobot/ee_gripper_link:
-            Alpha: 1
-            Show Axes: false
-            Show Trail: false
-          locobot/fingers_link:
-            Alpha: 1
-            Show Axes: false
-            Show Trail: false
-          locobot/gripper_bar_link:
-            Alpha: 1
-            Show Axes: false
-            Show Trail: false
-            Value: true
-          locobot/gripper_link:
-            Alpha: 1
-            Show Axes: false
-            Show Trail: false
-            Value: true
-          locobot/gripper_prop_link:
-            Alpha: 1
-            Show Axes: false
-            Show Trail: false
-            Value: true
-          locobot/gyro_link:
-            Alpha: 1
-            Show Axes: false
-            Show Trail: false
-          locobot/laser_frame_link:
-            Alpha: 1
-            Show Axes: false
-            Show Trail: false
-            Value: true
-          locobot/left_finger_link:
-            Alpha: 1
-            Show Axes: false
-            Show Trail: false
-            Value: true
-          locobot/lidar_tower_link:
-            Alpha: 1
-            Show Axes: false
-            Show Trail: false
-            Value: true
-          locobot/lower_forearm_link:
-            Alpha: 1
-            Show Axes: false
-            Show Trail: false
-            Value: true
-          locobot/pan_link:
-            Alpha: 1
-            Show Axes: false
-            Show Trail: false
-            Value: true
-          locobot/plate_link:
-            Alpha: 1
-            Show Axes: false
-            Show Trail: false
-            Value: true
-          locobot/right_finger_link:
-            Alpha: 1
-            Show Axes: false
-            Show Trail: false
-            Value: true
-          locobot/shoulder_link:
-            Alpha: 1
-            Show Axes: false
-            Show Trail: false
-            Value: true
-          locobot/tilt_link:
-            Alpha: 1
-            Show Axes: false
-            Show Trail: false
-            Value: true
-          locobot/upper_arm_link:
-            Alpha: 1
-            Show Axes: false
-            Show Trail: false
-            Value: true
-          locobot/upper_forearm_link:
-            Alpha: 1
-            Show Axes: false
-            Show Trail: false
-            Value: true
-          locobot/wheel_left_link:
-            Alpha: 1
-            Show Axes: false
-            Show Trail: false
-            Value: true
-          locobot/wheel_right_link:
-            Alpha: 1
-            Show Axes: false
-            Show Trail: false
-            Value: true
-          locobot/wrist_link:
-            Alpha: 1
-            Show Axes: false
-            Show Trail: false
-            Value: true
         Robot Alpha: 1
         Show Robot Collision: false
         Show Robot Visual: true
-      Value: true
+      Value: false
       Velocity_Scaling_Factor: 1
   Enabled: true
   Global Options:
@@ -1237,7 +933,7 @@ Visualization Manager:
 Window Geometry:
   Displays:
     collapsed: false
-  Height: 2086
+  Height: 1376
   Hide Left Dock: false
   Hide Right Dock: true
   Image:
@@ -1246,7 +942,7 @@ Window Geometry:
     collapsed: false
   MotionPlanning - Trajectory Slider:
     collapsed: false
-  QMainWindow State: 000000ff00000000fd0000000400000000000003c500000720fc020000000dfb0000001200530065006c0065006300740069006f006e00000001e10000009b000000b000fffffffb0000001e0054006f006f006c002000500072006f007000650072007400690065007302000001ed000001df00000185000000b0fb000000120056006900650077007300200054006f006f02000001df000002110000018500000122fb000000200054006f006f006c002000500072006f0070006500720074006900650073003203000002880000011d000002210000017afb000000100044006900730070006c006100790073010000006e000003e90000018200fffffffb0000002000730065006c0065006300740069006f006e00200062007500660066006500720200000138000000aa0000023a00000294fb00000014005700690064006500530074006500720065006f02000000e6000000d2000003ee0000030bfb0000000c004b0069006e0065006300740200000186000001060000030c00000261fb0000000c00430061006d00650072006100000003a8000000160000000000000000fb0000000a0049006d0061006700650000000299000001250000002600fffffffb000000280020002d0020005400720061006a006500630074006f0072007900200053006c00690064006500720000000000ffffffff0000000000000000fb0000001c004d006f00740069006f006e0050006c0061006e006e0069006e006701000004630000032b000002b800fffffffb00000044004d006f00740069006f006e0050006c0061006e006e0069006e00670020002d0020005400720061006a006500630074006f0072007900200053006c00690064006500720000000000ffffffff0000002600000026000000010000010f00000396fc0200000003fb0000001e0054006f006f006c002000500072006f00700065007200740069006500730100000041000000780000000000000000fb0000000a005600690065007700730000000028000003960000013200fffffffb0000001200530065006c0065006300740069006f006e010000025a000000b200000000000000000000000200000490000000a9fc0100000001fb0000000a00560069006500770073030000004e00000080000002e1000001970000000300000e700000005efc0100000002fb0000000800540069006d0065010000000000000e70000006dc00fffffffb0000000800540069006d0065010000000000000450000000000000000000000a9f0000072000000004000000040000000800000008fc0000000100000002000000010000000a0054006f006f006c00730100000000ffffffff0000000000000000
+  QMainWindow State: 000000ff00000000fd000000040000000000000241000004a2fc020000000dfb0000001200530065006c0065006300740069006f006e00000001e10000009b0000005c00fffffffb0000001e0054006f006f006c002000500072006f007000650072007400690065007302000001ed000001df00000185000000b0fb000000120056006900650077007300200054006f006f02000001df000002110000018500000122fb000000200054006f006f006c002000500072006f0070006500720074006900650073003203000002880000011d000002210000017afb000000100044006900730070006c006100790073010000003d000004a2000000c900fffffffb0000002000730065006c0065006300740069006f006e00200062007500660066006500720200000138000000aa0000023a00000294fb00000014005700690064006500530074006500720065006f02000000e6000000d2000003ee0000030bfb0000000c004b0069006e0065006300740200000186000001060000030c00000261fb0000000c00430061006d00650072006100000003a8000000160000000000000000fb0000000a0049006d0061006700650000000299000001250000001600fffffffb000000280020002d0020005400720061006a006500630074006f0072007900200053006c00690064006500720000000000ffffffff0000000000000000fb0000001c004d006f00740069006f006e0050006c0061006e006e0069006e006700000002cf000002100000017d00fffffffb00000044004d006f00740069006f006e0050006c0061006e006e0069006e00670020002d0020005400720061006a006500630074006f0072007900200053006c00690064006500720000000000ffffffff0000001600000016000000010000010f00000396fc0200000003fb0000001e0054006f006f006c002000500072006f00700065007200740069006500730100000041000000780000000000000000fb0000000a00560069006500770073000000002800000396000000a400fffffffb0000001200530065006c0065006300740069006f006e010000025a000000b200000000000000000000000200000490000000a9fc0100000001fb0000000a00560069006500770073030000004e00000080000002e10000019700000003000009b80000005efc0100000002fb0000000800540069006d00650100000000000009b8000003bc00fffffffb0000000800540069006d0065010000000000000450000000000000000000000771000004a200000004000000040000000800000008fc0000000100000002000000010000000a0054006f006f006c00730100000000ffffffff0000000000000000
   Selection:
     collapsed: false
   Time:
@@ -1255,6 +951,6 @@ Window Geometry:
     collapsed: false
   Views:
     collapsed: false
-  Width: 3696
-  X: 144
-  Y: 0
+  Width: 2488
+  X: 1992
+  Y: 27

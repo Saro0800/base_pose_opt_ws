@@ -2,8 +2,9 @@
 
   <!-- This file makes it easy to include the settings for sensor managers -->
   <arg name="robot_model" default=""/>
-  <arg name="robot_name" default=""/>
-  <arg name="use_camera" default=""/>
+  <arg name="robot_name"  default=""/>
+  <arg name="use_camera"  default=""/>
+  <arg name="use_real"    default="false"/>
 
   <!-- Params for the octomap monitor -->
   <param name="octomap_frame" type="string" value="map" />
@@ -13,7 +14,8 @@
   <group if="$(arg use_camera)">
 
     <!-- Params for 3D sensors config -->
-    <rosparam command="load" file="$(find interbotix_xslocobot_moveit)/config/sensors_3d.yaml" />
+    <rosparam command="load" file="$(find interbotix_xslocobot_moveit)/config/sensors_3d_real.yaml" if="$(arg use_real)"/>
+    <rosparam command="load" file="$(find interbotix_xslocobot_moveit)/config/sensors_3d.yaml" unless="$(arg use_real)"/>
 
     <!-- Load the robot specific sensor manager; this sets the moveit_sensor_manager ROS parameter -->
     <include file="$(find interbotix_xslocobot_moveit)/launch/xslocobot_moveit_sensor_manager.launch.xml">

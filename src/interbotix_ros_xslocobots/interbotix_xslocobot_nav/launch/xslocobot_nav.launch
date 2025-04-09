@@ -196,11 +196,6 @@
   </node>
 
   <include file="$(find interbotix_xslocobot_ros_control)/launch/xslocobot_ros_control.launch">
-
-  </include>
-
-  <include file="$(find interbotix_xslocobot_moveit)/launch/move_group.launch">
-    
   </include>
 
   <group if="$(arg use_joystick)">
@@ -254,15 +249,17 @@
     respawn="false"
     name="octomap_server_node"
     output="screen"
-    ns="$(arg robot_name)/octomap_server">
-    <!-- args="/home/rosario/Desktop/base_pose_opt_ws/src/maps/octomap_map_real.bt"> -->
-    <remap from="cloud_in"                      to="/$(arg robot_name)/camera/depth_registered/points"/>
-    <param name="base_frame_id"                 value="map"/>
+    ns="$(arg robot_name)/octomap_server"
+    args="/home/rosario/Desktop/base_pose_opt_ws/src/maps/octomap_map_real.bt">
+    <remap from="cloud_in"                      to="/$(arg robot_name)/camera/depth/color/points"/>
+    <param name="frame_id"                      value="map"/>
+    <param name="base_frame_id"                 value="/$(arg robot_name)/base_footprint"/>
     <param name="sensor_model/max_range"        value="2"/> 
     <param name="filter_ground"                 value="true"/>
+    <!-- <param name="ground_filter/distance"        value="0.05" /> -->
     <param name="resolution"                    value="0.025"/>
     <param name="max_update_rate"               value="100"/>
-    <!-- <param name="latch"                         value="true"/> -->
+    <param name="latch"                         value="true"/>
   </node>
 
   <!-- custom octomap to point cloud converter node -->
@@ -289,17 +286,18 @@
   <node
     pkg="base_optimization"
     type="find_opt_pose.py"
-    respawn="false"
+    respawn="true"
     name="find_opt_pose"
     output="screen"
     ns="$(arg robot_name)">
   </node>
 
-  <arg name="filename"          default="'/home/rosario/Desktop/base_pose_opt_ws/src/maps/octomap_map.bt'" />
+  <arg name="filename"          default="'/home/rosario/Desktop/base_pose_opt_ws/src/maps/octomap_map_real.bt'" />
   <arg name="load_map_args"     default='"filename: $(arg filename)"'/>
 
   <!-- start the moveit package -->
   <include file="$(find interbotix_xslocobot_moveit)/launch/move_group.launch">
+    <arg name="use_real"  value="true"/>
   </include>
   <node pkg="rosservice" type="rosservice" name="load_octomap" args="call --wait /$(arg robot_name)/move_group/load_map $(arg load_map_args)" />
 </launch>

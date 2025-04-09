@@ -1,4 +1,5 @@
 <launch>
+  <arg name="use_real"    default="false"/>
 
   <!-- GDB Debug Option -->
   <arg name="debug" default="false" />
@@ -67,6 +68,7 @@
       <arg name="robot_model" value="$(arg robot_model)"/>
       <arg name="robot_name"  value="$(arg robot_name)"/>
       <arg name="use_camera"  value="$(arg use_camera)"/>
+      <arg name="use_real"    value="$(arg use_real)"/>
     </include>
 
     <!-- Start the actual move_group node/action server -->
@@ -79,6 +81,7 @@
       <param name="jiggle_fraction" value="$(arg jiggle_fraction)" />
       <param name="capabilities" value="$(arg capabilities)"/>
       <param name="disable_capabilities" value="$(arg disable_capabilities)"/>
+      <param name="action_ack_timeout" value="10.0" />
 
 
       <!-- Publish the planning scene of the physical robot so that rviz plugin can know actual robot -->

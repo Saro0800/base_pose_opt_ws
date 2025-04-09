@@ -44,3 +44,11 @@ gripper_controller:
   gains:
     left_finger: {p: 100.0,  d: 1.0, i: 0.0}
     right_finger: {p: 100.0,  d: 1.0, i: 0.0}
+  constraints:
+    goal_time: 0.2
+    left_finger:
+      goal: 0.2
+      trajectory: 0.2
+    right_finger:
+      goal: 0.2
+      trajectory: 0.2

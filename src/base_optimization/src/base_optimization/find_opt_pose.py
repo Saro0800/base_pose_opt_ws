@@ -42,13 +42,15 @@ def move_arm():
     robot_arm.set_start_state_to_current_state()
     robot_arm.set_pose_target(des_pose_msg, end_effector_link)
     
-    # start moving and wait for termination
-    rospy.loginfo("Starting the movements...")
-    success = robot_arm.go(wait=True)
-    if success:
-        rospy.loginfo("Goal reached successfully!")
-    else:
-        rospy.loginfo("Failed!")
+    success = None
+    while not success:
+        # start moving and wait for termination
+        rospy.loginfo("Starting the movements...")
+        success = robot_arm.go(wait=True)
+        if success:
+            rospy.loginfo("Goal reached successfully!")
+        else:
+            rospy.loginfo("Failed!")
            
     # clear residual movements
     rospy.loginfo("Cleaning residual movements...")
@@ -186,23 +188,23 @@ def handle_des_EE_pose(data):
 # create a ROS node
 rospy.init_node('find_opt_pose', anonymous=True)
 
-# wait for gazebo to be unpaued
-rospy.wait_for_service("/gazebo/get_physics_properties")
+# # wait for gazebo to be unpaued
+# rospy.wait_for_service("/gazebo/get_physics_properties")
 
-get_physics = rospy.ServiceProxy(
-    "/gazebo/get_physics_properties", GetPhysicsProperties)
-rospy.loginfo("Waiting for Gazebo to be unpaused...")
+# get_physics = rospy.ServiceProxy(
+#     "/gazebo/get_physics_properties", GetPhysicsProperties)
+# rospy.loginfo("Waiting for Gazebo to be unpaused...")
 
-while not rospy.is_shutdown():
-    try:
-        physics = get_physics()
-        if physics.pause != True:  # Gazebo is unpaused if gravity is nonzero
-            rospy.loginfo("Gazebo unpaused! Proceeding...")
-            break
-    except rospy.ServiceException:
-        pass  # If service is not available, keep trying
+# while not rospy.is_shutdown():
+#     try:
+#         physics = get_physics()
+#         if physics.pause != True:  # Gazebo is unpaused if gravity is nonzero
+#             rospy.loginfo("Gazebo unpaused! Proceeding...")
+#             break
+#     except rospy.ServiceException:
+#         pass  # If service is not available, keep trying
 
-    rospy.sleep(1)
+#     rospy.sleep(1)
 
 # retrieve the parameter of the ellipsoid
 rospy.loginfo("Waiting for serive /get_ellipsoid_params...")
@@ -242,7 +244,7 @@ tf_listener = tf2_ros.TransformListener(tf_buffer)
 
 tf_buffer.can_transform("map", ell_ref_frame, rospy.Time(0))
 transform = tf_buffer.lookup_transform(
-    "map", ell_ref_frame, rospy.Time(0), rospy.Duration(1))
+    "map", ell_ref_frame, rospy.Time(0), rospy.Duration(2))
 ell_transformed_msg = tf2_geometry_msgs.do_transform_pose(tmp_pose, transform)
 
 ell_center_map = np.array([ell_transformed_msg.pose.position.x,
@@ -273,10 +275,12 @@ move_base_client.wait_for_server()
 
 # configure the moveit interface
 moveit_commander.roscpp_initialize('joint_states:=/locobot/joint_states')
-robot = moveit_commander.RobotCommander("/locobot/robot_description")
-planning_scene = moveit_commander.PlanningSceneInterface(ns="/locobot")
-robot_arm = moveit_commander.MoveGroupCommander("interbotix_arm", robot_description='/locobot/robot_description', ns='/locobot')
-
+# print("qui1")
+# robot = moveit_commander.RobotCommander("/locobot/robot_description")
+# print("qui2")
+# planning_scene = moveit_commander.PlanningSceneInterface(ns="/locobot")
+# print("qui3")
+robot_arm = moveit_commander.MoveGroupCommander("interbotix_arm", robot_description='/locobot/robot_description', ns="/locobot", wait_for_servers=20)
 
 print()
 rospy.loginfo("Waiting for the desired end-effector pose...")
