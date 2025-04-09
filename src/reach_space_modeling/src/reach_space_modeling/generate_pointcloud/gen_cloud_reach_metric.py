@@ -491,7 +491,7 @@ if __name__ == "__main__":
     gen_cloud.create_GUI()
 
     # gen_cloud.from_extern = True
-    # gen_cloud.urdf_file_path = "/home/rosario/Desktop/base_pose_opt_ws/src/reach_space_modeling/src/reach_space_modeling/generate_pointcloud/model/mobile_wx250s.urdf"
+    # gen_cloud.urdf_file_path = "~/Desktop/base_pose_opt_ws/src/reach_space_modeling/src/reach_space_modeling/generate_pointcloud/model/mobile_wx250s.urdf"
     # gen_cloud.parse_urdf()
     # gen_cloud.wrist_lst_j_name = "wrist_rotate"
     # gen_cloud.arm_lst_j_name = "elbow"

@@ -210,7 +210,7 @@
     name="octomap_server_node"
     output="screen"
     ns="$(arg robot_name)/octomap_server"
-    args="/home/rosario/Desktop/base_pose_opt_ws/src/maps/octomap_map.bt">
+    args="~/Desktop/base_pose_opt_ws/src/maps/octomap_map.bt">
     <remap from="cloud_in"                      to="/$(arg robot_name)/camera/depth_registered/points"/>
     <param name="base_frame_id"                 value="map"/>
     <param name="sensor_model/max_range"        value="2"/> 
@@ -250,7 +250,7 @@
     ns="$(arg robot_name)">
   </node>
 
-  <arg name="filename"          default="'/home/rosario/Desktop/base_pose_opt_ws/src/maps/octomap_map.bt'" />
+  <arg name="filename"          default="'~/Desktop/base_pose_opt_ws/src/maps/octomap_map.bt'" />
   <arg name="load_map_args"     default='"filename: $(arg filename)"'/>
 
   <!-- start the moveit package -->
