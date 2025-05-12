@@ -165,7 +165,6 @@ catkin_install_python(PROGRAMS
     src/reach_space_modeling/generate_pointcloud/gen_cloud_reach_metric.py
     src/reach_space_modeling/opt_problem/find_ellips_eq_all.py
     src/reach_space_modeling/opt_problem/find_ellips_eq_reach_opt.py
-    src/reach_space_modeling/opt_problem/find_ellips_eq_reach_opt2.py
     DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
 )
 

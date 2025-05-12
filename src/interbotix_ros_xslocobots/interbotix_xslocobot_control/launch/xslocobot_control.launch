@@ -145,6 +145,7 @@
     <arg name="depth_fps"                         value="$(arg depth_fps)"/>
     <arg name="depth_width"                       value="$(arg depth_width)"/>
     <arg name="depth_height"                      value="$(arg depth_height)"/>
+    <arg name="enable_pointcloud"                 value="true"/>
   </include>
 
 </launch>

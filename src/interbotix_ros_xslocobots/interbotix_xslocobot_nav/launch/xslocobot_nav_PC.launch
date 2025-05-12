@@ -195,8 +195,8 @@
     ns="$(arg robot_name)">
   </node>
 
-  <include file="$(find interbotix_xslocobot_ros_control)/launch/xslocobot_ros_control.launch">
-  </include>
+  <!-- <include file="$(find interbotix_xslocobot_ros_control)/launch/xslocobot_ros_control.launch">
+  </include> -->
 
   <group if="$(arg use_joystick)">
     <node
@@ -275,7 +275,7 @@
   <!-- node to find the ellipsoid equation -->
   <node
     pkg="reach_space_modeling"
-    type="find_ellips_eq_reach_opt2.py"
+    type="find_ellips_eq_reach_opt.py"
     respawn="false"
     name="find_ell_equation_node"
     output="screen"
@@ -292,12 +292,12 @@
     ns="$(arg robot_name)">
   </node>
 
-  <arg name="filename"          default="'/home/rosario/Desktop/base_pose_opt_ws/src/maps/octomap_map_real.bt'" />
-  <arg name="load_map_args"     default='"filename: $(arg filename)"'/>
+  <!-- <arg name="filename"          default="'/home/rosario/Desktop/base_pose_opt_ws/src/maps/octomap_map_real.bt'" />
+  <arg name="load_map_args"     default='"filename: $(arg filename)"'/> -->
 
   <!-- start the moveit package -->
-  <include file="$(find interbotix_xslocobot_moveit)/launch/move_group.launch">
+  <!-- <include file="$(find interbotix_xslocobot_moveit)/launch/move_group.launch">
     <arg name="use_real"  value="true"/>
   </include>
-  <node pkg="rosservice" type="rosservice" name="load_octomap" args="call --wait /$(arg robot_name)/move_group/load_map $(arg load_map_args)" />
+  <node pkg="rosservice" type="rosservice" name="load_octomap" args="call wait /$(arg robot_name)/move_group/load_map $(arg load_map_args)" /> -->
 </launch>

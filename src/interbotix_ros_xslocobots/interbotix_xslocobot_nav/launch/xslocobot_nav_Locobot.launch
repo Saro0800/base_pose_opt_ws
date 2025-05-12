@@ -2,35 +2,24 @@
 
   <arg name="robot_model"                       default="locobot_wx250s"/>
   <arg name="robot_name"                        default="locobot"/>
-  <arg name="arm_model"                         default="$(eval 'mobile_' + arg('robot_model').split('_')[1])"/>
   <arg name="use_lidar"                         default="true"/>
-  <arg name="show_gripper_bar"                  default="true"/>
-  <arg name="show_gripper_fingers"              default="true"/>
+  <arg name="show_lidar"                        default="$(arg use_lidar)"/>
   <arg name="external_urdf_loc"                 default=""/>
-  <arg name="localization"                      default="true"/>
+  <arg name="use_rviz"                          default="false"/>
+  <arg name="base_type"                         default="$(optenv INTERBOTIX_XSLOCOBOT_BASE_TYPE create3)"/> <!-- 'kobuki', 'create3' -->
+  <arg name="localization"                      default="false"/>
   <arg name="rtabmap_args"                      default=""/>
   <arg name="use_rtabmapviz"                    default="false"/>
   <arg name="rtabmapviz_args"                   default=""/>
-  <arg name="database_path"                     default="/home/rosario/Desktop/base_pose_opt_ws/src/maps/rtabmap.db"/>
+  <arg name="database_path"                     default="/home/locobot/Desktop/base_pose_opt_ws/src/maps/rtabmap_rea.db"/>
   <arg name="camera_tilt_angle"                 default="0.2618"/>
-  <arg name="use_rviz"                          default="true"/>
-  <arg name="base_type"                         default="kobuki"/> <!-- 'kobuki', 'create3' -->
-  <arg name="rviz_frame"                        default="map"/>
-  <arg name="world_name"                        default="$(find interbotix_xslocobot_gazebo)/worlds/office_small_custom.world"/>
-  <arg name="gui"                               default="true"/>
-  <arg name="debug"                             default="false"/>
-  <arg name="paused"                            default="true"/>
-  <arg name="recording"                         default="false"/>
-  <arg name="use_sim_time"                      default="true"/>
-  <arg name="use_position_controllers"          default="false"/>
-  <arg name="use_trajectory_controllers"        default="true"/>
-  <arg name="dof"                               default="6"/>
+  <arg name="launch_driver"                     default="true"/>
 
   <arg if="$(eval base_type == 'kobuki')"  name="move_base_cmd_vel_topic" default="mobile_base/commands/velocity"/>
-  <arg if="$(eval base_type == 'create3')" name="move_base_cmd_vel_topic" default="cmd_vel"/>
+  <arg if="$(eval base_type == 'create3')" name="move_base_cmd_vel_topic" default="/mobile_base/cmd_vel"/>
 
   <arg if="$(eval base_type == 'kobuki')"  name="odom_topic" default="mobile_base/odom"/>
-  <arg if="$(eval base_type == 'create3')" name="odom_topic" default="odom"/>
+  <arg if="$(eval base_type == 'create3')" name="odom_topic" default="/mobile_base/odom"/>
 
   <arg     if="$(arg use_lidar)" name="rtabmap_default_args" default="$(arg rtabmap_args)
                                                                       --RGBD/NeighborLinkRefining true
@@ -64,25 +53,19 @@
                                                                       --Reg/Strategy 0
                                                                       --Mem/STMSize 30"/>
 
-  <include file="$(find interbotix_xslocobot_gazebo)/launch/xslocobot_gazebo.launch">
-    <arg name="robot_model"                       default="$(arg robot_model)"/>
-    <arg name="robot_name"                        default="$(arg robot_name)"/>
-    <arg name="arm_model"                         default="$(arg arm_model)"/>
-    <arg name="show_lidar"                        default="true"/>
-    <arg name="show_gripper_bar"                  default="$(arg show_gripper_bar)"/>
-    <arg name="show_gripper_fingers"              default="$(arg show_gripper_fingers)"/>
-    <arg name="external_urdf_loc"                 default="$(arg external_urdf_loc)"/>
-    <arg name="use_rviz"                          default="$(arg use_rviz)"/>
-    <arg name="rviz_frame"                        default="$(arg rviz_frame)"/>
-    <arg name="world_name"                        default="$(arg world_name)"/>
-    <arg name="gui"                               default="$(arg gui)"/>
-    <arg name="debug"                             default="$(arg debug)"/>
-    <arg name="paused"                            default="$(arg paused)"/>
-    <arg name="recording"                         default="$(arg recording)"/>
-    <arg name="use_sim_time"                      default="$(arg use_sim_time)"/>
-    <arg name="use_position_controllers"          default="$(arg use_position_controllers)"/>
-    <arg name="use_trajectory_controllers"        default="$(arg use_trajectory_controllers)"/>
-    <arg name="dof"                               default="$(arg dof)"/>
+  <include if="$(arg launch_driver)" file="$(find interbotix_xslocobot_control)/launch/xslocobot_control.launch">
+    <arg name="robot_model"                       value="$(arg robot_model)"/>
+    <arg name="robot_name"                        value="$(arg robot_name)"/>
+    <arg name="use_lidar"                         value="$(arg use_lidar)"/>
+    <arg name="show_lidar"                        value="$(arg show_lidar)"/>
+    <arg name="external_urdf_loc"                 value="$(arg external_urdf_loc)"/>
+    <arg name="use_rviz"                          value="$(arg use_rviz)"/>
+    <arg name="base_type"                         value="$(arg base_type)"/>
+    <arg name="rviz_frame"                        value="map"/>
+    <arg name="use_camera"                        value="true"/>
+    <arg name="align_depth"                       value="true"/>
+    <arg name="use_base"                          value="true"/>
+    <arg name="use_dock"                          value="true"/>
   </include>
 
   <group ns="$(arg robot_name)/rtabmap">
@@ -92,12 +75,11 @@
       type="nodelet"
       name="rgbd_sync"
       output="screen"
-      args="standalone rtabmap_sync/rgbd_sync">
+      args="load rtabmap_sync/rgbd_sync /$(arg robot_name)/camera/realsense2_camera_manager">
       <param name="approx_sync"                   value="false"/>
       <remap from="rgb/image"                     to="/$(arg robot_name)/camera/color/image_raw"/>
       <remap from="depth/image"                   to="/$(arg robot_name)/camera/aligned_depth_to_color/image_raw"/>
       <remap from="rgb/camera_info"               to="/$(arg robot_name)/camera/color/camera_info"/>
-      <remap from="rgbd_image"                    to="rgbd_image"/>
     </node>
 
     <node
@@ -105,7 +87,7 @@
       type="nodelet"
       name="points_xyzrgb"
       output="screen"
-      args="standalone rtabmap_util/point_cloud_xyzrgb">
+      args="load rtabmap_util/point_cloud_xyzrgb /$(arg robot_name)/camera/realsense2_camera_manager">
       <param name="decimation"                    value="4"/>
       <param name="voxel_size"                    value="0.05"/>
       <param name="approx_sync"                   value="false"/>
@@ -117,7 +99,7 @@
       type="nodelet"
       name="obstacle_detection"
       output="screen"
-      args="standalone rtabmap_util/obstacles_detection">
+      args="load rtabmap_util/obstacles_detection /$(arg robot_name)/camera/realsense2_camera_manager">
       <param name="wait_for_transform"            value="true"/>
       <param name="frame_id"                      value="$(arg robot_name)/base_footprint"/>
       <remap from="cloud"                         to="depth/color/voxels"/>
@@ -202,59 +184,23 @@
     <remap from="odom"                            to="$(arg odom_topic)"/>
   </node>
 
-  <!-- octomap_server node -->
-  <node
-    pkg="octomap_server"
-    type="octomap_server_node"
-    respawn="false"
-    name="octomap_server_node"
-    output="screen"
-    ns="$(arg robot_name)/octomap_server"
-    args="/home/rosario/Desktop/base_pose_opt_ws/src/maps/octomap_map.bt">
-    <remap from="cloud_in"                      to="/$(arg robot_name)/camera/depth_registered/points"/>
-    <param name="base_frame_id"                 value="map"/>
-    <param name="sensor_model/max_range"        value="2"/> 
-    <param name="filter_ground"                 value="true"/>
-    <param name="resolution"                    value="0.025"/>
-    <param name="max_update_rate"               value="100"/>
-    <param name="latch"                         value="true"/>
-  </node>
+  <include file="$(find interbotix_xslocobot_ros_control)/launch/xslocobot_ros_control.launch">
+  </include>
 
-  <!-- custom octomap to point cloud converter node -->
   <node
-    pkg="base_optimization"
-    type="octo2cloud_converter_node"
-    respawn="false"
-    name="octo2cloud_converter_node"
-    output="screen"
+    pkg="rostopic"
+    type="rostopic"
+    name="camera_tilt"
+    args="pub -1 commands/joint_group interbotix_xs_msgs/JointGroupCommand --latch '{name: 'camera', cmd: [0, $(arg camera_tilt_angle)]}'"
     ns="$(arg robot_name)">
   </node>
 
-  <!-- node to find the ellipsoid equation -->
-  <node
-    pkg="reach_space_modeling"
-    type="find_ellips_eq_reach_opt.py"
-    respawn="false"
-    name="find_ell_equation_node"
-    output="screen"
-    ns="$(arg robot_name)">
-  </node>
-
-  <!-- node to find optimal base poses -->
-  <!-- <node
-    pkg="base_optimization"
-    type="find_opt_pose.py"
-    respawn="false"
-    name="find_opt_pose"
-    output="screen"
-    ns="$(arg robot_name)">
-  </node> -->
-
-  <arg name="filename"          default="'/home/rosario/Desktop/base_pose_opt_ws/src/maps/octomap_map.bt'" />
+  <arg name="filename"          default="'/home/locobot/Desktop/base_pose_opt_ws/src/maps/octomap_map_real.bt'" />
   <arg name="load_map_args"     default='"filename: $(arg filename)"'/>
 
   <!-- start the moveit package -->
   <include file="$(find interbotix_xslocobot_moveit)/launch/move_group.launch">
+    <arg name="use_real"  value="true"/>
   </include>
   <node pkg="rosservice" type="rosservice" name="load_octomap" args="call --wait /$(arg robot_name)/move_group/load_map $(arg load_map_args)" />
 

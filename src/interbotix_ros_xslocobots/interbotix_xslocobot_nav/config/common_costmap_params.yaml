@@ -27,4 +27,4 @@ depth_layer:
 
 inflation_layer:
   cost_scaling_factor: 2.5
-  inflation_radius: 0.15
+  inflation_radius: 0.1

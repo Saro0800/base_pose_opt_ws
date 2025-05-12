@@ -41,7 +41,7 @@ class BasePoseOptProblem(ElementwiseProblem):
         # define the parameters of the optimization problem
         super().__init__(n_var=3,
                          n_obj=1,
-                         n_ieq_constr=2,
+                         n_ieq_constr=3,
                          xl=np.array([x_des_EE - max(aO,bO), y_des_EE - max(aO,bO), 0]),
                          xu=np.array([x_des_EE + max(aO,bO), y_des_EE + max(aO,bO), 360]))
 
@@ -110,13 +110,17 @@ class BasePoseOptProblem(ElementwiseProblem):
         # count how many points are inside the ellipsoid        
         inner_points = self.point_cloud[((x[0]-self.xcloud)/aO)**2 + ((x[1]-self.ycloud)/bO)**2 + ((zc-self.zcloud)/cO)**2<=1]
         
+        # count how many points are inside the inner ellipsoid
+        inn_ell_points = self.point_cloud[((x[0]-self.xcloud)/aI)**2 + ((x[1]-self.ycloud)/bI)**2 + ((zc-self.zcloud)/cI)**2<=1]
+        
         # define the constraints
         constrs = [((x[0]-xp)/aO)**2 + ((x[1]-yp)/bO)**2 + ((zc-zp)/cO)**2 - 1,
-                   -((x[0]-xp)/aI)**2 - ((x[1]-yp)/bI)**2 - ((zc-zp)/cI)**2 + 1]
+                   -((x[0]-xp)/aI)**2 - ((x[1]-yp)/bI)**2 - ((zc-zp)/cI)**2 + 1,
+                   inn_ell_points.shape[0]]
         out["G"] = np.row_stack(constrs)
         
         # define the objective function       
-        out["F"] = theta_orig + theta_versor + 1.*inner_points.shape[0]
+        out["F"] = 5*(theta_orig + theta_versor) + 0.2*inner_points.shape[0]
         
         
         
