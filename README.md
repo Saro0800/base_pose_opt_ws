@@ -1,7 +1,7 @@
 # Mobile manipulator base placement optimization using an ellipsoidal reachability model
 
 ## Table of contents
-+ [Introduction](#introduciton)
++ [Introduction](#introduction)
 + [Installation](#installation)
 + [Documentation](#documentation)
 + [Simulation tutorial](#simulation_tutorial)
