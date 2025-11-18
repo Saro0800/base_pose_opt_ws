@@ -41,7 +41,7 @@ The code contained in this repository has been used for the experimental evaluat
 ### Disclaimer
 Due to robot-related hardware constraints, the code in this repository has been developed and tested using **Python 3.8.10** on **Ubuntu 20.04 LTS**, that is the latest version supporting **ROS 1 Noetic**.
 
-Besides, the provided code should work for newer versions of Python, and could be easily adapted for ROS 2 as well. However, it has not been tested for such configurations. For more recent versions of Python and ROS, the used libraries may have received major updates and some errors may arise.
+In any case, the provided code should work for newer versions of Python, and could be easily adapted for ROS 2 as well. However, it has not been tested for such configurations. For more recent versions of Python and ROS, the used libraries may have received major updates and some errors may arise.
 
 ### Prerequisites
 Before installing and using this repo, please be sure to meet the following prerequisites:
