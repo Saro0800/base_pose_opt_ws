@@ -14,10 +14,10 @@ des_EE_pose.header.frame_id = "map"
 des_EE_pose.header.stamp = rospy.Time.now()
 
 # # pose 1
-# des_EE_pose.pose.position.x = 3.034
-# des_EE_pose.pose.position.y = -3.684
-# des_EE_pose.pose.position.z = 0.39
-# des_orientation = tf.transformations.quaternion_from_euler(0, 0, np.deg2rad(195), axes='sxyz')
+des_EE_pose.pose.position.x = 3.034
+des_EE_pose.pose.position.y = -3.684
+des_EE_pose.pose.position.z = 0.39
+des_orientation = tf.transformations.quaternion_from_euler(0, 0, np.deg2rad(195), axes='sxyz')
 # # pose 2
 # des_EE_pose.pose.position.x = 2.875
 # des_EE_pose.pose.position.y = -3.414
@@ -71,10 +71,10 @@ des_EE_pose.header.stamp = rospy.Time.now()
 # des_orientation = tf.transformations.quaternion_from_euler(0, 0, np.deg2rad(0), axes='sxyz')
 
 # pose 2
-des_EE_pose.pose.position.x = 3.034
-des_EE_pose.pose.position.y = -3.684
-des_EE_pose.pose.position.z = 0.39
-des_orientation = tf.transformations.quaternion_from_euler(0, 0, np.deg2rad(195), axes='sxyz')
+# des_EE_pose.pose.position.x = 3.034
+# des_EE_pose.pose.position.y = -3.684
+# des_EE_pose.pose.position.z = 0.39
+# des_orientation = tf.transformations.quaternion_from_euler(0, 0, np.deg2rad(195), axes='sxyz')
 
 
 

@@ -161,7 +161,6 @@ include_directories(
 ## in contrast to setup.py, you can choose the destination
 catkin_install_python(PROGRAMS
     src/reach_space_modeling/generate_pointcloud/gen_cloud_GUI.py
-    src/reach_space_modeling/generate_pointcloud/gen_cloud_singular_conf.py
     src/reach_space_modeling/generate_pointcloud/gen_cloud_reach_metric.py
     src/reach_space_modeling/opt_problem/find_ellips_eq_all.py
     src/reach_space_modeling/opt_problem/find_ellips_eq_reach_opt.py

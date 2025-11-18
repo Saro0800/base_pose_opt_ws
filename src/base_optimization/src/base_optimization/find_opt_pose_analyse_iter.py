@@ -98,7 +98,7 @@ def handle_des_EE_pose(data):
     cloud_np = ros_numpy.numpify(occ_cloud.cloud)
 
 
-    # find the optimal base pose using the GA (50 times)
+    # find the optimal base pose using the GA (25 times)
     n_times = 25
 
     

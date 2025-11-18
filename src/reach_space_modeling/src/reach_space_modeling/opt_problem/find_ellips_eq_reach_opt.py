@@ -109,7 +109,7 @@ def create_ell_msg(points, link, axes, center=None):
     marker_msg.color.r = 100/255
     marker_msg.color.g = 100/255
     marker_msg.color.b = 100/255
-    marker_msg.color.a = 0.2
+    marker_msg.color.a = 0.4
 
     # set the pose of the marker
     marker_msg.pose.position.x = center[0]
@@ -536,11 +536,11 @@ if __name__ == "__main__":
     orig_points = gen_cloud.points
     orig_reach_measure = gen_cloud.points_reach_measure
     
-    points = gen_cloud.points[gen_cloud.points[:,0]<=center[0]]
-    reach_measure = gen_cloud.points_reach_measure[gen_cloud.points[:,0]<=center[0]]
+    # points = gen_cloud.points[gen_cloud.points[:,0]<=center[0]]
+    # reach_measure = gen_cloud.points_reach_measure[gen_cloud.points[:,0]<=center[0]]
     
-    gen_cloud.points = points
-    gen_cloud.points_reach_measure = reach_measure
+    # gen_cloud.points = points
+    # gen_cloud.points_reach_measure = reach_measure
     
     colors = gen_cloud.vis_cloud_with_measure()
     markArray_msg = gen_cloud.create_pointcloud_msg(colors)

@@ -103,7 +103,7 @@ def find_opt_base_pose(ell_frame_link, des_pose, point_cloud):
         ell_center_map, ell_axis_out, ell_axis_inn, des_pose, point_cloud)
 
     # solve the optimization problem
-    algorithm = ES()
+    algorithm = PSO()
     termination = RobustTermination(
         SingleObjectiveSpaceTermination(tol=pow(10, -4))
     )
@@ -151,7 +151,7 @@ def find_opt_base_pose(ell_frame_link, des_pose, point_cloud):
     base_pos[2] = res.X[2]
 
 
-    # send_opt_base_pose(base_pos[0], base_pos[1], base_pos[2])
+    send_opt_base_pose(base_pos[0], base_pos[1], base_pos[2])
 
 def handle_des_EE_pose(data):
     global des_pose_msg
@@ -304,11 +304,6 @@ move_base_client.wait_for_server()
 
 # configure the moveit interface
 moveit_commander.roscpp_initialize('joint_states:=/locobot/joint_states')
-# print("qui1")
-# robot = moveit_commander.RobotCommander("/locobot/robot_description")
-# print("qui2")
-# planning_scene = moveit_commander.PlanningSceneInterface(ns="/locobot")
-# print("qui3")
 robot_arm = moveit_commander.MoveGroupCommander("interbotix_arm", robot_description='/locobot/robot_description', ns="/locobot", wait_for_servers=20)
 
 print()

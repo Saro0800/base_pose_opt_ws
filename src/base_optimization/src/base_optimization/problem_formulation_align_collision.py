@@ -46,7 +46,7 @@ class BasePoseOptProblem(ElementwiseProblem):
                          xu=np.array([x_des_EE + max(aO,bO), y_des_EE + max(aO,bO), 360]))
 
     def _evaluate(self, x, out, *args, **kwargs):
-        # retrieve the ellipsoid equation equation paramters
+        # retrieve the ellipsoid equation paramters
         aO = self.ell_axis_out[0]
         bO = self.ell_axis_out[1]
         cO = self.ell_axis_out[2]
@@ -120,7 +120,7 @@ class BasePoseOptProblem(ElementwiseProblem):
         out["G"] = np.row_stack(constrs)
         
         # define the objective function       
-        out["F"] = 5*(theta_orig + theta_versor) + 0.2*inner_points.shape[0]
+        out["F"] = (theta_orig + theta_versor) + inner_points.shape[0]
         
         
         

@@ -526,20 +526,23 @@ class GenereatePointCloudWithMetric(GenereatePointCloud):
         for i in range(self.points.shape[0]):
             marker = Marker()
             marker.id = i
-            marker.header.frame_id = "map"
+            marker.header.frame_id = self.point_cloud_orig_frame
             marker.header.stamp = rospy.Time.now()
             marker.type = Marker.SPHERE
             marker.pose.position.x = self.points[i,0]
             marker.pose.position.y = self.points[i,1]
             marker.pose.position.z = self.points[i,2]
             marker.pose.orientation.w = 1.0
-            marker.scale.x = 0.05
-            marker.scale.y = 0.05
-            marker.scale.z = 0.05
+            marker.scale.x = 0.02
+            marker.scale.y = 0.02
+            marker.scale.z = 0.02
             marker.color.r = colors[i,0]
             marker.color.g = colors[i,1]
             marker.color.b = colors[i,2]
-            marker.color.a = 0.7
+            # marker.color.r = 0.0
+            # marker.color.g = 0.0
+            # marker.color.b = 1.0
+            marker.color.a = 0.5
             
             markArray_msg.markers.append(marker)
         

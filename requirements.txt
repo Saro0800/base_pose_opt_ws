@@ -7,7 +7,6 @@ numpy==1.22.2
 # numpy==1.17.4
 pybullet==3.2.5
 # PyKDL==1.4.0
-pymoo==0.6.1.1
 pytorch_kinematics==0.7.5
 rospy==1.17.0
 scipy==1.4.0
