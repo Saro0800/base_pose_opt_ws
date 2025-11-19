@@ -3,8 +3,16 @@
 ## Table of contents
 + [Introduction](#introduction)
 + [Installation](#installation)
+    + [Disclaimer](#disclaimer)
+    + [Prerequisites](#prerequisites)
+    + [Install the code in this repository](#install-the-code-in-this-repository)
+    + [Install pymoo](#install-pymoo)
 + [Documentation](#documentation)
+    + [reach_space_modeling module](#reach_space_modeling-module)
+    + [base_optimization](#base_optimization-module)
+    + [Code Adaptation](#code-adaptation)
 + [Simulation tutorial](#simulation-tutorial)
+    + [Errors while parsing the URDF file](#errors-while-parsing-the-urdf-file)
 + [Possible errors](#possible-errors)
 + [Cite us](#cite_us)
 
@@ -129,7 +137,7 @@ By running `find_ellips_eq_reach_opt.py`, first the point cloud generation and r
 
 At the end of the optimization process, the 9 parameters characterizing the equations of the concentric ellipsoids are computed, and the ellipsoids along with their center are visualized in Rviz as ROS Markers. Again, the coordinates of the center are defined with respect to the reference frame attached to the *parent link* of the joint selected as *first joint of the arm* in the GUI.
 
-### Base Optimization Module
+### base_optimization Module
 
 The `base_optimization` folder provides the full pipeline for computing the optimal mobile base pose that enables the robot to reach a desired end-effector pose while minimizing alignment error and avoiding obstacles.  
 It includes both the optimization problem formulation and the execution node that performs data acquisition, optimization, and robot control.
@@ -256,7 +264,7 @@ To run the simulation, please follow these steps:
     ```
 
 ## Possible errors
-### Error with the URDF file
+### Errors while parsing the URDF file
 The python module used to parse the URDF file is `urdfpy`. This module needs relative/absolute paths to be used for the mesh files. For this reason, when you copy the URDF of your robot inside the "model" folder of the "generate_pointcloud" modules, please be sure to specify relative/absolute paths for the meshes, otherwise `urdfpy` will fail to parse your URDF file.
 
 ## Cite us
