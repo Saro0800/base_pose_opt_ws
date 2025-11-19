@@ -12,8 +12,8 @@
     + [base_optimization](#base_optimization-module)
     + [Code Adaptation](#code-adaptation)
 + [Simulation tutorial](#simulation-tutorial)
-    + [Errors while parsing the URDF file](#errors-while-parsing-the-urdf-file)
 + [Possible errors](#possible-errors)
+    + [Errors while parsing the URDF file](#errors-while-parsing-the-urdf-file)
 + [Cite us](#cite_us)
 
 ## Introduction
