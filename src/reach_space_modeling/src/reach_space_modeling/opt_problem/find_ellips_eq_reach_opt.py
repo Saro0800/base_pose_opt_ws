@@ -449,16 +449,6 @@ if __name__ == "__main__":
     #     rospy.sleep(1)
 
     gen_cloud.create_GUI()
-
-    # generate the point cloud
-    # gen_cloud.from_extern = True
-    # gen_cloud.urdf_file_path = "/home/rosario/Desktop/base_pose_opt_ws/src/reach_space_modeling/src/reach_space_modeling/generate_pointcloud/model/mobile_wx250s.urdf"
-    # gen_cloud.parse_urdf()
-    # gen_cloud.wrist_lst_j_name = "wrist_rotate"
-    # gen_cloud.arm_lst_j_name = "elbow"
-    # gen_cloud.arm_frt_j_name = "waist"
-    # gen_cloud.num_samples = 10
-    # gen_cloud.generate_point_cloud()
     rospy.loginfo("Reachability point cloud created...")
 
     # compute the reachability index for each point

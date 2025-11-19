@@ -39,9 +39,9 @@ The code contained in this repository has been used for the experimental evaluat
 
 ## Installation
 ### Disclaimer
-Due to robot-related hardware constraints, the code in this repository has been developed and tested using **Python 3.8.10** on **Ubuntu 20.04 LTS**, that is the latest version supporting **ROS 1 Noetic**.
+Due to robot-related constraints, the code in this repository has been developed and tested using **Python 3.8.10** on **Ubuntu 20.04 LTS**, that is the latest version supporting **ROS 1 Noetic**.
 
-In any case, the provided code should work for newer versions of Python, and could be easily adapted for ROS 2 as well. However, it has not been tested for such configurations. For more recent versions of Python and ROS, the used libraries may have received major updates and some errors may arise.
+In any case, the provided code should work for newer versions of Python too, and could be easily adapted for ROS 2 as well. However, it has not been tested for such configurations. For more recent versions of Python and ROS, the used libraries may have received major updates and some errors may arise.
 
 ### Prerequisites
 Before installing and using this repo, please be sure to meet the following prerequisites:
@@ -73,17 +73,17 @@ To use the code provided in this repository, please follow these steps:
 
 
 ### Install pymoo
-Classes and methods from the pymoo library have been extensively used in the provided implementation. As stated in the [installation guide](https://pymoo.org/installation.html), there are different ways to install and use the pymoo library. Among the others, installing and using pymoo with compiled modules can significantly speed some operations.
+Classes and methods from the pymoo library have been extensively used in the provided implementation. As stated in the [installation guide](https://pymoo.org/installation.html), there are different ways to install and use the pymoo library. Among the others, installing and using pymoo with compiled modules can significantly speed up some operations.
 
 The results presented and discussed in the paper associated with this repository have been obtained using **pymoo 0.6.0.1** with **compiled modules**.
 
-To install it, follow these steps:\
+To install it, follow these steps:
 1. Go to the "releases" section of the pymoo github repository: https://github.com/anyoptimization/pymoo/releases ;
-2. Download the source code of *Version 0.6.0.1* (the .zip or .tar.gz archive under the *Assets* submenu);
+2. Download the source code of **Version 0.6.0.1** (the .zip or .tar.gz archive under the *Assets* submenu);
 3. Extract the archive;
 4. Go to the extracted folder
     ```
-    cd path/to/parent/pymoo-0.6.0.1
+    cd path/to/pymoo-0.6.0.1
     ```
 5. Compile the submodules:
     ```
@@ -93,6 +93,46 @@ To install it, follow these steps:\
     ```
     pip install .
     ```
+## Documentation
+The code provided to compute the optimal base pose of a mobile manipulator can be divided in 3 main modules, that are contained inside the "src" folder. The modules are named **base_optimization**, **interbotix_ros_xslocobot** and **reach_space_modeling**.
+
+### reach_space_modeling module
+It is the extension of the code contained in [this repository](https://github.com/Saro0800/Robotic-manipulators-reachability-space-modeling), where the reachable space of a manipulator has been modeled using a single ellipsoid equations. Differently, in this paper the optimal reachable space has been modeled using two concentric ellipsoids.
+
+The "reach_space_modeling" is divided into two sub-modules: **generate_pointcloud** and **opt_problem**.
+
+#### generate_pointcloud
+The aim of this submodule is to generate a pointcloud representing the set of points reachable by the manipulator. For covenience, the genereate_pointcloud folder contains a subfolders named "model", that contains some example URDF files. You can place the URDF file of your robot inside this folder to easily find it using the *Point Cloud Generation tool*.
+
+By executing "gen_cloud_reach_metric.py", a practical GUI to generate the point cloud shows up (whose elements and methods are defined in gen_cloud_GUI.py), as illustrated in the figure below. [Here](https://github.com/Saro0800/Robotic-manipulators-reachability-space-modeling/tree/main/generate_pointcloud) you can find a detailed documentation on how to use the GUI, while , for the details on how the point cloud is computed, please refere to Section 4.1 of [this paper](https://link.springer.com/article/10.1007/s10846-025-02294-5).
+
+By pressing the button "Generate", a set of points is generated. The coordinates of such points are defined with respect to the reference frame attached to the *parent link* (using the URDF notation) of the joint selected as *first joint of the arm* in the GUI.
+
+<div align="center">
+    <img src="./images/gui_updated.jpg">
+</div>
+
+After the user finishes selecting parameters in the GUI by pressing the button "Done" (or by closing the windows), the script executes the following main steps to compute and visualize the reachability metric:
++ generate_reachability_index(): Generates a reachability score for every point in the cloud. This includes:
+    + Sampling orientations around each point.
+    + Initializing the KDL model and IK solvers.
+    + Loading the robot in PyBullet for self-collision checks.
+    + Running IK for every pose at every point and incrementing the point’s score whenever a valid, + collision-free configuration exists.
+
++ vis_cloud_with_measure(): Displays the computed reachability cloud using a 3D scatter plot. Points are colored according to their reachability index, providing a visual metric of how easily the robot can reach each region of space.
+
++ publish_pointcloud_msg(colors): Creates and publishes a ROS MarkerArray message containing the colored reachability cloud. Each point is published as a small colored marker for visualization in RViz.
+
+#### opt_problem
+The objective of this submodule is to compute the equations of the concentric ellipsoids.
+
+By running "find_ellips_eq_reach_opt.py", first the point cloud generation and reachability distribution computation process illustrated above is executed, then the "solve_eqn_prob" function is called. This function create an instance of the optimization problem formulated to obtain the ellipsoid equations, and then solve it using the desired optimization algorithm. The optimization problem, whose mathematical definition is contained in Section 3 of [the related paper](https://ieeexplore.ieee.org/document/11205534), is defined inside the "problem_formulation_reach_opt.py" file.
+
+At the end of the optimization process, the 9 parameters characterizing the equations of the concentric ellipsoids are computed, and the ellipsoids along with their center are visualized in Rviz as ROS Markers. Again, the coordinates of the center are defined with respect to the reference frame attached to the *parent link* of the joint selected as *first joint of the arm* in the GUI.
+
+
+## Simulation tutorials
+
 
 
 ## Cite us

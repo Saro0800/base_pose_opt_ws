@@ -270,15 +270,9 @@ class GenereatePointCloud:
         for point in self.points:
             data.append(struct.pack('fff', *point))
         self.pointcloud_msg.data = b''.join(data)
-
-    def publish_pointcloud_msg(self):
-        self.create_pointcloud_msg()
-        self.pub_points.publish(self.pointcloud_msg)
-        self.pub_rate.sleep()
-        self.text_box.config(state='normal')
-        self.text_box.insert('end', "Message published.\n")
-        self.text_box.yview(tk.END)
-        self.text_box.config(state='disabled')
+    
+    def close_gui(self):
+        self.root_window.destroy()
 
     def create_GUI(self):
         # create the main window
@@ -369,7 +363,7 @@ class GenereatePointCloud:
         self.gen_cloud_button.config(state='disabled')
 
         # button to publish the desired message
-        self.pub_msg = tk.Button(self.gen_cloud_button_frm, text="Publish", height=2, width=10, command=self.publish_pointcloud_msg)
+        self.pub_msg = tk.Button(self.gen_cloud_button_frm, text="Done", height=2, width=10, command=self.close_gui)
         self.pub_msg.grid(row=0, column=1, padx=20, pady=20)
         self.pub_msg.config(state='disabled')
 

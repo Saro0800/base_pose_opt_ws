@@ -132,12 +132,9 @@ class GenereatePointCloudWithMetric(GenereatePointCloud):
                                                                        distance=0.001,
                                                                        linkIndexA=jnt_i,
                                                                        linkIndexB=jnt_j)
-                            # print(contacts)
                             if contacts:
-                                # print(f"Collisione rilevata tra il link {jnt_i} e il link {jnt_j}!")
                                 # pybullet.changeVisualShape(self.pybullet_robot, jnt_i, rgbaColor=[1, 0, 0, 1])
                                 # pybullet.changeVisualShape(self.pybullet_robot, jnt_j, rgbaColor=[1, 0, 0, 1])
-                                # input()
                                 # pybullet.changeVisualShape(self.pybullet_robot, jnt_i, rgbaColor=[1, 1, 1, 1])
                                 # pybullet.changeVisualShape(self.pybullet_robot, jnt_j, rgbaColor=[1, 1, 1, 1])
                                 contacts_flag = True
@@ -222,10 +219,8 @@ class GenereatePointCloudWithMetric(GenereatePointCloud):
                 if contacts:
                     self.default_coll[jnt_i].append(jnt_j)
                     self.default_coll[jnt_j].append(jnt_i)
-                    # print(f"Collisione rilevata tra il link {jnt_i} e il link {jnt_j}!")
                     # pybullet.changeVisualShape(self.pybullet_robot, jnt_i, rgbaColor=[1, 0, 0, 1])
                     # pybullet.changeVisualShape(self.pybullet_robot, jnt_j, rgbaColor=[1, 0, 0, 1])
-                    # input()
                     # pybullet.changeVisualShape(self.pybullet_robot, jnt_i, rgbaColor=[1, 1, 1, 1])
                     # pybullet.changeVisualShape(self.pybullet_robot, jnt_j, rgbaColor=[1, 1, 1, 1])
 
@@ -448,8 +443,8 @@ class GenereatePointCloudWithMetric(GenereatePointCloud):
         # center coordinates
         xc, yc, zc = center[0], center[1], center[2]
         '''
-            RPY sono gli angoli rispetto al sistema di riferimento in cui sono
-            stati definiti i centri delle sfere (punti raggiungibili)
+            RPY are the angles defined with respect to the reference frame where
+            the sphere centers where defined
         '''
         pose_angles_RPY = []
 
@@ -558,14 +553,6 @@ if __name__ == "__main__":
     gen_cloud.create_ros_node()
     gen_cloud.create_GUI()
 
-    # gen_cloud.from_extern = True
-    # gen_cloud.urdf_file_path = "/home/rosario/Desktop/base_pose_opt_ws/src/reach_space_modeling/src/reach_space_modeling/generate_pointcloud/model/mobile_wx250s.urdf"
-    # gen_cloud.parse_urdf()
-    # gen_cloud.wrist_lst_j_name = "wrist_rotate"
-    # gen_cloud.arm_lst_j_name = "elbow"
-    # gen_cloud.arm_frt_j_name = "waist"
-    # gen_cloud.num_samples = 10
-    # gen_cloud.generate_point_cloud()
     rospy.loginfo("Reachability point cloud created...")
 
     gen_cloud.generate_reachability_index()
