@@ -4,7 +4,7 @@
 + [Introduction](#introduction)
 + [Installation](#installation)
 + [Documentation](#documentation)
-+ [Simulation tutorial](#simulation_tutorial)
++ [Simulation tutorial](#simulation-tutorial)
 + [Cite us](#cite_us)
 
 ## Introduction
@@ -149,7 +149,7 @@ This script computes and executes the optimal base pose once a desired end-effec
    When a pose is received, it parses the target position/orientation and publishes it for visualization.
 
 3. **Convert Octomap to Point Cloud**  
-   The occupancy grid is converted to a point cloud using `/locobot/octomap2cloud_converter_srv`.  
+   The occupancy grid from Octomap is converted to a point cloud.  
    The resulting `PointCloud2` is converted to a NumPy array.
 
 4. **`find_opt_base_pose(...)`**  
@@ -202,11 +202,57 @@ The optimizer minimizes this objective to determine the best base placement.
 
 ---
 
+### Code adaptation
+Inside the code of the `base_optimization` module, the name of some topics, services and reference frames have been hard coded for simplicity. Here it follows a detailed list of changes to be done in order to use this code on other robots.
+
+*Note*: is the namespace of our robot, so you should change it with yours.
+
+1. **`find_opt_pose.py`**
+    + **/locobot/octomap2cloud_converter_srv** is the name of the service used to request the conversion of the occupancy grid into a point cloud &rarr just change the namespace "locobot" with yours
+    + **/locobot/base_footprint** &rarr change it with the name of the reference frame attached to the base of your mobile robot
+    + **/locobot/move_base** is the name of the action client of the *move_base* package &rarr change it with the action client you are using to move the mobile base
+    + **/locobot/joint_states** is the name of the topic publishing the state of the joints (used by MoveIt) &rarr change it accordingly
+    + **/locobot/robot_description** &rarr change it with the name on the parameter server containing the description of your robot
+2. **`octo2cloud_converter.cpp`** (you need to recompile everything with `catkin_make`)
+    + **/locobot/octomap_server/octomap_binary** &rarr change it with the name of the topic where Octomap publish the binary map of your environment
+3. **``**
 
 
-## Simulation tutorials
 
+## Simulation tutorial
+To test the code, we provide a simulation environment. It makes use of the code contained in [this repository](https://github.com/Interbotix/interbotix_ros_rovers/tree/main) from Trossen Robtics. The simulation uses the LoCoBot mobile manipulator, a 6 DOF manipulator with parallel fingers mounted on top of a mobile base with differential wheels.
 
+To run the simulation, please follow these steps:
+1. Create your ROS workspace and copy all the folders in the src folder of this repo inside the src folder of your workspace.
+2. Build your workspace
+    ```
+    catkin_make
+    ```
+3. Source your newly created workspace:
+    ```
+    source devel/setup.bash
+    ```
+4. Start the main components:
+    ```
+    roslaunch interbotix_xslocobot_nav xslocobot_nav_sim.launch
+    ```
+    This will start the simulaiton on Gazebo, Rviz for visualization, and the procedure to obtain the mathematical model of the reachable space of the used robot.
+5. In a new terminal, activate the simulation:
+    ```
+    rosservice call /gazebo/unpause_physics
+    ```
+6. In a new terminal, source your ROS workspace and start the node to find optimal base placement:
+    ```
+    cd /path/to/your_ros_ws
+    source devel/setup.bash
+    rosrun base_optimization find_opt_pose.py __ns:=locobot
+    ```
+7. In a new terminal, source your ROS workspace and start the node to publish the desired end-effector pose:
+    ```
+    cd /path/to/your_ros_ws
+    source devel/setup.bash
+    rosrun base_optimization des_EE_pose_publisher.py __ns:=locobot
+    ```
 
 ## Cite us
 If you use the code in this repository in your research, please cite the following paper:
