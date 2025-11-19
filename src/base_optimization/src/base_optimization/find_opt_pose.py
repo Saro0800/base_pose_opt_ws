@@ -17,9 +17,7 @@ from sensor_msgs.msg import PointCloud2
 from scipy.spatial.transform import Rotation
 
 from reach_space_modeling.srv import ell_params, ell_paramsResponse
-# from base_optimization.problem_formulation_align import BasePoseOptProblem
 from base_optimization.problem_formulation_align_collision import BasePoseOptProblem
-
 
 from pymoo.algorithms.soo.nonconvex.ga import GA
 from pymoo.algorithms.soo.nonconvex.pso import PSO
@@ -120,9 +118,9 @@ def find_opt_base_pose(ell_frame_link, des_pose, point_cloud):
     rospy.loginfo("Solution found in %.4f s", res.exec_time)
     print(res.F)
 
-    # io qui ottengo la posizione dell'ellissoide rispetto a R0
-    # devo trovare le coordinate della base che mi permettono di arrivare
-    # ad avere il centro dell'ellissoide nel punto desiderato
+    # Here I obtain the position of the ellipsoid with respect to R0
+    # I need to find the coordinates of the base that allow me
+    # to place the center of the ellipsoid at the desired point
 
     tmp = PoseStamped()
     tmp.header.frame_id = "map"

@@ -31,9 +31,7 @@ This ellipsoidal model is then exploited in a **second optimization problem**, d
 
 Different optimization algorithms can be used to solve the optimization problems, allowing users to balance convergence time and optimality depending on application requirements.
 
-<!-- **Documentation of each module can be found inside each specific folder.** -->
-
-The code contained in this repository has been used for the experimental evaluation in the paper *“Mobile Manipulator Base Placement Optimization Using an Ellipsoidal Reachability Model.”*
+The code contained in this repository has been used for the experimental evaluation in the paper [**“Mobile Manipulator Base Placement Optimization Using an Ellipsoidal Reachability Model”**](https://ieeexplore.ieee.org/document/11205534).
 
 **Keywords**: Mobile Manipulators, Base Placement Optimization, Reachability Space, Ellipsoid Modeling, Optimization.
 
@@ -94,17 +92,17 @@ To install it, follow these steps:
     pip install .
     ```
 ## Documentation
-The code provided to compute the optimal base pose of a mobile manipulator can be divided in 3 main modules, that are contained inside the "src" folder. The modules are named **base_optimization**, **interbotix_ros_xslocobot** and **reach_space_modeling**.
+The code provided to compute the optimal base pose of a mobile manipulator can be divided in 3 main modules, that are contained inside the "src" folder. The modules are named **`base_optimization`**, **`interbotix_ros_xslocobot`** and **`reach_space_modeling`**.
 
 ### reach_space_modeling module
 It is the extension of the code contained in [this repository](https://github.com/Saro0800/Robotic-manipulators-reachability-space-modeling), where the reachable space of a manipulator has been modeled using a single ellipsoid equations. Differently, in this paper the optimal reachable space has been modeled using two concentric ellipsoids.
 
-The "reach_space_modeling" is divided into two sub-modules: **generate_pointcloud** and **opt_problem**.
+The `reach_space_modeling` module is divided into two sub-modules: **`generate_pointcloud`** and **`opt_problem`**.
 
 #### generate_pointcloud
-The aim of this submodule is to generate a pointcloud representing the set of points reachable by the manipulator. For covenience, the genereate_pointcloud folder contains a subfolders named "model", that contains some example URDF files. You can place the URDF file of your robot inside this folder to easily find it using the *Point Cloud Generation tool*.
+The aim of this submodule is to generate a pointcloud representing the set of points reachable by the manipulator. For covenience, the `genereate_pointcloud` folder contains a subfolders named `model`, that contains some example URDF files. You can place the URDF file of your robot inside this folder to easily find it using the *Point Cloud Generation tool*.
 
-By executing "gen_cloud_reach_metric.py", a practical GUI to generate the point cloud shows up (whose elements and methods are defined in gen_cloud_GUI.py), as illustrated in the figure below. [Here](https://github.com/Saro0800/Robotic-manipulators-reachability-space-modeling/tree/main/generate_pointcloud) you can find a detailed documentation on how to use the GUI, while , for the details on how the point cloud is computed, please refere to Section 4.1 of [this paper](https://link.springer.com/article/10.1007/s10846-025-02294-5).
+By executing `gen_cloud_reach_metric.py`, a practical GUI to generate the point cloud shows up (whose elements and methods are defined in gen_cloud_GUI.py), as illustrated in the figure below. [Here](https://github.com/Saro0800/Robotic-manipulators-reachability-space-modeling/tree/main/generate_pointcloud) you can find a detailed documentation on how to use the GUI, while , for the details on how the point cloud is computed, please refere to Section 4.1 of [this paper](https://link.springer.com/article/10.1007/s10846-025-02294-5).
 
 By pressing the button "Generate", a set of points is generated. The coordinates of such points are defined with respect to the reference frame attached to the *parent link* (using the URDF notation) of the joint selected as *first joint of the arm* in the GUI.
 
@@ -113,22 +111,97 @@ By pressing the button "Generate", a set of points is generated. The coordinates
 </div>
 
 After the user finishes selecting parameters in the GUI by pressing the button "Done" (or by closing the windows), the script executes the following main steps to compute and visualize the reachability metric:
-+ generate_reachability_index(): Generates a reachability score for every point in the cloud. This includes:
++ `generate_reachability_index()`: Generates a reachability score for every point in the cloud. This includes:
     + Sampling orientations around each point.
     + Initializing the KDL model and IK solvers.
     + Loading the robot in PyBullet for self-collision checks.
     + Running IK for every pose at every point and incrementing the point’s score whenever a valid, + collision-free configuration exists.
 
-+ vis_cloud_with_measure(): Displays the computed reachability cloud using a 3D scatter plot. Points are colored according to their reachability index, providing a visual metric of how easily the robot can reach each region of space.
++ `vis_cloud_with_measure()`: Displays the computed reachability cloud using a 3D scatter plot. Points are colored according to their reachability index, providing a visual metric of how easily the robot can reach each region of space.
 
-+ publish_pointcloud_msg(colors): Creates and publishes a ROS MarkerArray message containing the colored reachability cloud. Each point is published as a small colored marker for visualization in RViz.
++ `publish_pointcloud_msg(colors)`: Creates and publishes a ROS MarkerArray message containing the colored reachability cloud. Each point is published as a small colored marker for visualization in RViz.
 
 #### opt_problem
 The objective of this submodule is to compute the equations of the concentric ellipsoids.
 
-By running "find_ellips_eq_reach_opt.py", first the point cloud generation and reachability distribution computation process illustrated above is executed, then the "solve_eqn_prob" function is called. This function create an instance of the optimization problem formulated to obtain the ellipsoid equations, and then solve it using the desired optimization algorithm. The optimization problem, whose mathematical definition is contained in Section 3 of [the related paper](https://ieeexplore.ieee.org/document/11205534), is defined inside the "problem_formulation_reach_opt.py" file.
+By running `find_ellips_eq_reach_opt.py`, first the point cloud generation and reachability distribution computation process illustrated above is executed, then the `solve_eqn_prob` function is called. This function create an instance of the optimization problem formulated to obtain the ellipsoid equations, and then solve it using the desired optimization algorithm. The optimization problem, whose mathematical definition is contained in Section 3 of [the related paper](https://ieeexplore.ieee.org/document/11205534), is defined inside the `problem_formulation_reach_opt.py` file.
 
 At the end of the optimization process, the 9 parameters characterizing the equations of the concentric ellipsoids are computed, and the ellipsoids along with their center are visualized in Rviz as ROS Markers. Again, the coordinates of the center are defined with respect to the reference frame attached to the *parent link* of the joint selected as *first joint of the arm* in the GUI.
+
+### Base Optimization Module
+
+The `base_optimization` folder provides the full pipeline for computing the optimal mobile base pose that enables the robot to reach a desired end-effector pose while minimizing alignment error and avoiding obstacles.  
+It includes both the optimization problem formulation and the execution node that performs data acquisition, optimization, and robot control.
+
+---
+
+#### find_opt_pose.py
+
+This script computes and executes the optimal base pose once a desired end-effector pose is provided.
+
+**Main Workflow**
+1. **Retrieve Ellipsoid Parameters**  
+   The node calls `/get_ellipsoid_params` to load the ellipsoid center, inner/outer axes, and reference frame.  
+   These parameters are transformed into both the map frame and the mobile base frame.
+
+2. **Wait for Desired End-Effector Pose**  
+   The node listens to `/des_EE_pose`.  
+   When a pose is received, it parses the target position/orientation and publishes it for visualization.
+
+3. **Convert Octomap to Point Cloud**  
+   The occupancy grid is converted to a point cloud using `/locobot/octomap2cloud_converter_srv`.  
+   The resulting `PointCloud2` is converted to a NumPy array.
+
+4. **`find_opt_base_pose(...)`**  
+   Constructs a `BasePoseOptProblem` instance and solves it using the desired optimizer.  
+   The solution (x, y, θ) minimizes misalignment and collision risk.  
+   The predicted optimal base pose is published for visualization.
+
+5. **Transform Solution Into Base Target**  
+   The optimal pose is transformed using the relative ellipsoid–base reference frame to ensure the ellipsoid center reaches its intended location.
+
+6. **`send_opt_base_pose(...)`**  
+   Sends the optimal base pose to the `move_base` action server and waits until the goal is reached.
+
+7. *(Optional)* **`move_arm()`**  
+   If enabled, MoveIt executes the arm motion to the desired end-effector pose after the base is positioned.
+
+---
+
+#### problem_formulation_align_collision.py
+
+This file defines the optimization problem used during base pose computation.
+
+**`BasePoseOptProblem` Class**
+Defines a constrained, single-objective optimization problem that evaluates how suitable a candidate base pose is based on:
+
+- Alignment between the ellipsoid reference frame and the desired end-effector pose  
+- Satisfaction of inner and outer ellipsoid constraints  
+- Collision avoidance based on the occupancy point cloud  
+
+**Main Components**
+1. **Initialization**  
+   Receives:
+   - Ellipsoid center  
+   - Outer and inner axes  
+   - Desired end-effector pose  
+   - Occupancy point cloud  
+   
+   It builds required transformation matrices, extracts cloud coordinates, and defines bounds for (x, y, θ).
+
+2. **`_evaluate(x, out, ...)`**  
+   For a candidate base pose:  
+   - Computes transformations to the ellipsoid frame  
+   - Projects desired pose and orientation into that frame  
+   - Computes angular alignment terms  
+   - Counts points inside both ellipsoids  
+   - Defines three inequality constraints  
+   - Computes the objective function combining alignment error and collision count  
+
+The optimizer minimizes this objective to determine the best base placement.
+
+---
+
 
 
 ## Simulation tutorials
