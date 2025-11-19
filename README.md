@@ -5,6 +5,7 @@
 + [Installation](#installation)
 + [Documentation](#documentation)
 + [Simulation tutorial](#simulation-tutorial)
++ [Possible errors](#possible-errors)
 + [Cite us](#cite_us)
 
 ## Introduction
@@ -253,6 +254,10 @@ To run the simulation, please follow these steps:
     source devel/setup.bash
     rosrun base_optimization des_EE_pose_publisher.py __ns:=locobot
     ```
+
+## Possible errors
+### Error with the URDF file
+The python module used to parse the URDF file is `urdfpy`. This module needs relative/absolute paths to be used for the mesh files. For this reason, when you copy the URDF of your robot inside the "model" folder of the "generate_pointcloud" modules, please be sure to specify relative/absolute paths for the meshes, otherwise `urdfpy` will fail to parse your URDF file.
 
 ## Cite us
 If you use the code in this repository in your research, please cite the following paper:
