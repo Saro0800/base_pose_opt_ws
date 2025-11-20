@@ -268,6 +268,19 @@ To run the simulation, please follow these steps:
     ```
 
 ## Possible errors
+### Errors while compiling the pymoo modules
+When running ```make compile``` inside the ```pymo-0.6.0.6``` folder, you may encounter the following error:
+```
+python setup.py build_ext --inplace
+make: python: Command not found
+make: *** [Makefile:11: compile] Error 127
+```
+
+This simply means that the command ```python```, that is an alias for ```python3``` used to run python scripts, has not been defined. This can be simply solved by running:
+```
+sudo ln -s /usr/bin/python3 /usr/bin/python
+```
+
 ### Errors while parsing the URDF file
 The python module used to parse the URDF file is `urdfpy`. This module needs relative/absolute paths to be used for the mesh files. For this reason, when you copy the URDF of your robot inside the "model" folder of the "generate_pointcloud" modules, please be sure to specify relative/absolute paths for the meshes, otherwise `urdfpy` will fail to parse your URDF file.
 
