@@ -66,6 +66,10 @@ Before installing and using this repo, please be sure to meet the following prer
     ```
     pip install Cython==0.29.34 
     ```
+6. *[Optional]* **MoveIt**: install MoveIt:
+    ```
+    sudo apt-get install ros-noetic-moveit*
+    ```
 
 ### Install the code in this repository
 To use the code provided in this repository, please follow these steps:
