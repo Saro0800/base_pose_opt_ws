@@ -267,14 +267,13 @@ Inside the code of the `base_optimization` module, the name of some topics, serv
 *Note*: is the namespace of our robot, so you should change it with yours.
 
 1. **`find_opt_pose.py`**
-    + **/locobot/octomap2cloud_converter_srv** is the name of the service used to request the conversion of the occupancy grid into a point cloud &rarr just change the namespace "locobot" with yours
-    + **/locobot/base_footprint** &rarr change it with the name of the reference frame attached to the base of your mobile robot
-    + **/locobot/move_base** is the name of the action client of the *move_base* package &rarr change it with the action client you are using to move the mobile base
-    + **/locobot/joint_states** is the name of the topic publishing the state of the joints (used by MoveIt) &rarr change it accordingly
-    + **/locobot/robot_description** &rarr change it with the name on the parameter server containing the description of your robot
+    + **/locobot/octomap2cloud_converter_srv** is the name of the service used to request the conversion of the occupancy grid into a point cloud &rarr; just change the namespace "locobot" with yours
+    + **/locobot/base_footprint** &rarr; change it with the name of the reference frame attached to the base of your mobile robot
+    + **/locobot/move_base** is the name of the action client of the *move_base* package &rarr; change it with the action client you are using to move the mobile base
+    + **/locobot/joint_states** is the name of the topic publishing the state of the joints (used by MoveIt) &rarr; change it accordingly
+    + **/locobot/robot_description** &rarr; change it with the name on the parameter server containing the description of your robot
 2. **`octo2cloud_converter.cpp`** (you need to recompile everything with `catkin_make`)
-    + **/locobot/octomap_server/octomap_binary** &rarr change it with the name of the topic where Octomap publish the binary map of your environment
-3. **``**
+    + **/locobot/octomap_server/octomap_binary** &rarr; change it with the name of the topic where Octomap publish the binary map of your environment
 
 
 
