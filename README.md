@@ -60,7 +60,7 @@ Before installing and using this repo, please be sure to meet the following prer
     ```
 4. **pip**: install pip to retrieve common libraries:
     ```
-    sudo apt-get install pytohn3-pip
+    sudo apt-get install python3-pip
     ```
 5. **Cython**: install Cython languange to build C extentions from Python code:
     ```
