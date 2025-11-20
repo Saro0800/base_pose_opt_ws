@@ -74,12 +74,39 @@ Before installing and using this repo, please be sure to meet the following prer
    ```
    sudo apt-get install python3-pykdl
    ```
-8. **pykdl_utils**: please follow the tutorial [here](https://amir-yazdani.github.io/post/pykdl/)
-9. *[Optional]* **MoveIt**: install MoveIt:
-    ```
-    sudo apt-get install ros-noetic-moveit*
-    ```
-10. *[Optional][Needed to run the provided simulaiton]*: **interbotix_xs_sdk**\
+8. **pykdl_utils**: run the following commands\
+   Clone the hrl-kdl repository in your home folder:
+   ```
+   cd
+   git clone https://github.com/amir-yazdani/hrl-kdl.git
+   ```
+   Switch to the noetic branch:
+   ```
+   cd hrl-kdl
+   git checkout noetic-devel
+   ```
+   Install ```pykdl_utils```:
+   ```
+   cd pykdl_utils
+   python setup.py build
+   sudo pip install .
+   ```
+   Install ```hrl_geom```:
+   ```
+   cd ../hrl_geom
+   python setup.py build
+   sudo pip install .
+   ```
+   Install ```urdf_parser``` and ```urdfdom-py```:
+   ```
+   sudo apt-get install ros-<ROS distibution>-urdf-parser-plugin
+   sudo apt-get install ros-<ROS distibution>-urdfdom-py
+   ```
+10. *[Optional]* **MoveIt**: install MoveIt:
+   ```
+   sudo apt-get install ros-noetic-moveit*
+   ```
+11. *[Optional][Needed to run the provided simulaiton]*: **interbotix_xs_sdk**\
    Follow the **AMD64 installation** tutorial provided by Trossen Robitcs [here](https://docs.trossenrobotics.com/interbotix_xslocobots_docs/ros_interface/ros1/software_setup.html#id5):
    ```
    sudo apt install curl
