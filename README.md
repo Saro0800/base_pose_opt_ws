@@ -69,12 +69,17 @@ Before installing and using this repo, please be sure to meet the following prer
 6. **Octomap**: install the Octomap plugin for ROS:
    ```
    sudo apt-get install ros-noetic-octomap*
-   ```  
-7. *[Optional]* **MoveIt**: install MoveIt:
+   ```
+7. **PyKDL**: used to solve the IK problem:
+   ```
+   sudo apt-get install python3-pykdl
+   ```
+8. **pykdl_utils**: please follow the tutorial [here](https://amir-yazdani.github.io/post/pykdl/)
+9. *[Optional]* **MoveIt**: install MoveIt:
     ```
     sudo apt-get install ros-noetic-moveit*
     ```
-8. *[Optional][Needed to run the provided simulaiton]*: **interbotix_xs_sdk**\
+10. *[Optional][Needed to run the provided simulaiton]*: **interbotix_xs_sdk**\
    Follow the **AMD64 installation** tutorial provided by Trossen Robitcs [here](https://docs.trossenrobotics.com/interbotix_xslocobots_docs/ros_interface/ros1/software_setup.html#id5):
    ```
    sudo apt install curl
