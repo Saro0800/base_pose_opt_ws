@@ -66,10 +66,17 @@ Before installing and using this repo, please be sure to meet the following prer
     ```
     pip install Cython==0.29.34 
     ```
-6. *[Optional]* **MoveIt**: install MoveIt:
+6. **Octomap**: install the Octomap plugin for ROS:
+   ```
+   sudo apt-get install ros-noetic-octomap*
+   ```  
+7. *[Optional]* **MoveIt**: install MoveIt:
     ```
     sudo apt-get install ros-noetic-moveit*
     ```
+8. *[Optional][Needed to run the provided simulaiton]*: **interbotix_xs_sdk**
+   Follow the **Remote installation** tutorial provided by Trossen Robitcsd [here](https://docs.trossenrobotics.com/interbotix_xslocobots_docs/ros_interface/ros1/software_setup.html#software-installation).\
+   If you don't need/want to run the simulation, please remove the ```interbotix_ros_xslocobot``` folder from ```src``` before running ```catkin_make```.
 
 ### Install the code in this repository
 To use the code provided in this repository, please follow these steps:
