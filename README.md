@@ -74,8 +74,8 @@ Before installing and using this repo, please be sure to meet the following prer
     ```
     sudo apt-get install ros-noetic-moveit*
     ```
-8. *[Optional][Needed to run the provided simulaiton]*: **interbotix_xs_sdk**
-   Follow the **Remote installation** tutorial provided by Trossen Robitcsd [here](https://docs.trossenrobotics.com/interbotix_xslocobots_docs/ros_interface/ros1/software_setup.html#software-installation).\
+8. *[Optional][Needed to run the provided simulaiton]*: **interbotix_xs_sdk**\
+   Follow the **Remote installation** tutorial provided by Trossen Robitcs [here](https://docs.trossenrobotics.com/interbotix_xslocobots_docs/ros_interface/ros1/software_setup.html#software-installation).\
    If you don't need/want to run the simulation, please remove the ```interbotix_ros_xslocobot``` folder from ```src``` before running ```catkin_make```.
 
 ### Install the code in this repository
