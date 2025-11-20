@@ -75,13 +75,14 @@ Before installing and using this repo, please be sure to meet the following prer
     sudo apt-get install ros-noetic-moveit*
     ```
 8. *[Optional][Needed to run the provided simulaiton]*: **interbotix_xs_sdk**\
-   Follow the **Remote installation** tutorial provided by Trossen Robitcs:
+   Follow the **Remote installation** tutorial provided by Trossen Robitcs [here](https://docs.trossenrobotics.com/interbotix_xslocobots_docs/ros_interface/ros1/software_setup.html#id6):
    ```
    sudo apt install curl
    curl 'https://raw.githubusercontent.com/Interbotix/interbotix_ros_rovers/main/interbotix_ros_xslocobots/install/xslocobot_remote_install.sh' > xslocobot_remote_install.sh
    chmod +x xslocobot_remote_install.sh
    ./xslocobot_remote_install.sh -d noetic -b kobuki
    ```
+   Be aware that the installation script will export the ROS_MASTER_URI environment variable in your personal computer's ~/.bashrc file to http://<hostname>.local:11311. Make sure to comment out this line when done monitoring or your personal computer will complain about not being able to find its ROS Master.
    If you don't need/want to run the simulation, please remove the ```interbotix_ros_xslocobot``` folder from ```src``` before running ```catkin_make```.
 
 ### Install the code in this repository
