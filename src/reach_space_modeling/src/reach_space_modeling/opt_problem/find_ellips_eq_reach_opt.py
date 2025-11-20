@@ -16,15 +16,12 @@ from pymoo.termination.ftol import SingleObjectiveSpaceTermination
 
 from visualization_msgs.msg import Marker
 from geometry_msgs.msg import Point
-from sensor_msgs.msg import PointCloud2, PointField
 from std_msgs.msg import ColorRGBA
 from sensor_msgs.point_cloud2 import create_cloud
 from reach_space_modeling.srv import ell_params, ell_paramsRequest, ell_paramsResponse
-from gazebo_msgs.srv import GetPhysicsProperties
 
 import matplotlib.pyplot as plt
 from matplotlib.colors import LinearSegmentedColormap
-import matplotlib.path as mpath
 import matplotlib.patches as mpatches
 from matplotlib.patches import Ellipse
 from matplotlib.path import Path

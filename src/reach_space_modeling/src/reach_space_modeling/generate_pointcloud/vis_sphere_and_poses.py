@@ -1,7 +1,7 @@
 import numpy as np
 import rospy
 from visualization_msgs.msg import Marker
-from geometry_msgs.msg import Pose, PoseArray, Point
+from geometry_msgs.msg import Pose, PoseArray
 import tf.transformations
 
 def sample_sphere_fibonacci_grid(center, radius, n_samples=50):

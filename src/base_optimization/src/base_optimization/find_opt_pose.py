@@ -1,4 +1,3 @@
-import octomap_msgs.msg
 import rospy
 import actionlib
 from geometry_msgs.msg import PoseStamped
@@ -10,10 +9,7 @@ import tf2_geometry_msgs
 import tf
 import numpy as np
 import ros_numpy
-from visualization_msgs.msg import Marker
 from geometry_msgs.msg import PoseStamped
-from move_base_msgs.msg import MoveBaseActionGoal
-from sensor_msgs.msg import PointCloud2
 from scipy.spatial.transform import Rotation
 
 from reach_space_modeling.srv import ell_params, ell_paramsResponse
@@ -29,12 +25,7 @@ from pymoo.termination.robust import RobustTermination
 from pymoo.termination.ftol import SingleObjectiveSpaceTermination
 
 from base_optimization.srv import octomap2cloud, octomap2cloudResponse
-from gazebo_msgs.srv import GetPhysicsProperties
-
 import moveit_commander
-import moveit_msgs.msg
-from geometry_msgs.msg import Pose
-from std_msgs.msg import String
 
 def move_arm():
     # set the target

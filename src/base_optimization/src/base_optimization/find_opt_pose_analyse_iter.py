@@ -10,7 +10,6 @@ import ros_numpy
 from geometry_msgs.msg import PoseStamped
 
 from reach_space_modeling.srv import ell_params, ell_paramsResponse
-# from base_optimization.problem_formulation_align import BasePoseOptProblem
 from base_optimization.problem_formulation_align_collision import BasePoseOptProblem
 
 from pymoo.algorithms.soo.nonconvex.ga import GA
@@ -26,8 +25,6 @@ from pymoo.operators.mutation.pm import PM
 from pymoo.operators.crossover.sbx import SBX
 
 from base_optimization.srv import octomap2cloud, octomap2cloudResponse
-from gazebo_msgs.srv import GetPhysicsProperties
-import matplotlib.pyplot as plt
 
 from tqdm import tqdm
 import h5py

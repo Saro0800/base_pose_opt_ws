@@ -3,7 +3,6 @@ import sys
 sys.path.append("..")
 
 import numpy as np
-import math
 from pymoo.core.problem import ElementwiseProblem
 
 class EllipsoidEquationOptProblem(ElementwiseProblem):

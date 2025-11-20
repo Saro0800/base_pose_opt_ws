@@ -1,21 +1,11 @@
-import tkinter as tk
 import numpy as np
 from scipy.spatial.transform import Rotation
 from reach_space_modeling.generate_pointcloud.gen_cloud_GUI import GenereatePointCloud
-import pytorch_kinematics as pk
-import torch
-import time
-
-import tkinter as tk
 import numpy as np
-import time
 from scipy.spatial.transform import Rotation
-from sensor_msgs.msg import PointCloud2, PointField
 from visualization_msgs.msg import Marker, MarkerArray
-from std_msgs.msg import Header
 import matplotlib.pyplot as plt
 from matplotlib.colors import LinearSegmentedColormap
-from mpl_toolkits.mplot3d import Axes3D
 import rospy
 from tqdm import tqdm
 

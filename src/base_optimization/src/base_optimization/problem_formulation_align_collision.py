@@ -1,6 +1,5 @@
 #!/usr/bin/env python3
 import numpy as np
-import math
 from pymoo.core.problem import ElementwiseProblem
 from scipy.spatial.transform import Rotation
 
