@@ -1,17 +1,11 @@
-# actionlib==1.14.3
 h5py==3.11.0
 matplotlib==3.7.5
-# moveit_commander==1.1.16
 numpy==1.22.2
+pillow==10.4.0
 pybullet==3.2.5
-PyKDL==1.4.0
-# pymoo==0.6.0.1
-# rospy==1.17.4
 scipy==1.10.1
 setuptools==75.3.2
-# tf==1.13.4
-# tf2_geometry_msgs==0.7.10
-# tf2_ros==0.7.10
+testresources==2.0.2
 tqdm==4.67.1
 urdf_parser_py==0.0.4
 urdfpy==0.0.22
