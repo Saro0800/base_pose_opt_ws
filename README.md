@@ -13,6 +13,7 @@
     + [Code Adaptation](#code-adaptation)
 + [Simulation tutorial](#simulation-tutorial)
 + [Possible errors](#possible-errors)
+    + [Errors while compiling the pymoo modules](#errors-while-compiling-the-pymoo-modules)
     + [Errors while parsing the URDF file](#errors-while-parsing-the-urdf-file)
 + [Cite us](#cite_us)
 
