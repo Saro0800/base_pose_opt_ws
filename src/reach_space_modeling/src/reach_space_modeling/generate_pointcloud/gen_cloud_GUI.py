@@ -386,3 +386,5 @@ if __name__=="__main__":
     gen_cloud = GenereatePointCloud()
     gen_cloud.create_ros_node()
     gen_cloud.create_GUI()
+    
+    
